@@ -1,0 +1,17 @@
+.servicios {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+.servicios li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.nav{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
