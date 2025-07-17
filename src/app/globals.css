@@ -1,2 +1,10 @@
 @import "tailwindcss";
+body{
+    background: ffffff;
+}
 
+header{
+    padding: 20px;
+    background: #FCFCFC;
+    box-shadow: 0 0 5px rgb(224, 222, 222);
+}

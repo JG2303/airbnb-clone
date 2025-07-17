@@ -1,8 +1,9 @@
 import Image from "next/image"
 import styles from "./Header.module.css"
+import { Filtros } from "../Filtros/Filtros"
 export const Header = ()=>{
     return(
-        <header className="containerHeader flex  flex-col bg-sky-100">
+        <header className="containerHeader flex  flex-col ">
             <div className="encabezado flex justify-between ">
                 <div className="logo-container">
                 <Image 
@@ -19,8 +20,8 @@ export const Header = ()=>{
                             <Image 
                                 src="/images/hospedaje.png"
                                 alt="Hospedaje"
-                                width={56}
-                                height={56}
+                                width={36}
+                                height={36}
                             />  
                             Hospedaje                
                         </li>
@@ -28,8 +29,8 @@ export const Header = ()=>{
                             <Image 
                                 src="/images/experiencias.png"
                                 alt="experiencias"
-                                width={56}
-                                height={56}
+                                width={36}
+                                height={36}
                             />
                             Experiencias
                         </li>
@@ -37,8 +38,8 @@ export const Header = ()=>{
                             <Image 
                                 src="/images/servicios.png"
                                 alt="servicios"
-                                width={56}
-                                height={56}
+                                width={36}
+                                height={36}
                             />
                             Servicios
                         </li>
@@ -54,16 +55,30 @@ export const Header = ()=>{
                     <Image 
                         src="/images/login.png"
                         alt="login"
-                        width={81}
-                        height={38}
+                        width={16}
+                        height={16}
                     />
                 </div>
             </div>
             <div className="busqueda flex justify-center items-center ">
-                    <input className="border-2" type="text" placeholder="hola" />
-                    <input className="border-2" type="text" placeholder="como"/>
-                    <input className="border-2" type="text" placeholder="estas"/>
-                    
+                <div className="container-filtro flex justify-evenly rounded-full items-center  border-1  w-3xl h-13">
+                   <Filtros 
+                        label={[1,2,3]}
+                        texto={"Explora destinos"}
+                   />
+                    <Filtros 
+                        label={"Check-in"}
+                        texto={"Agrega fecha"}
+                   />
+                    <Filtros 
+                        label={"Check-out"}
+                        texto={"Agrega fecha"}
+                   />
+                    <Filtros 
+                        label={"Quién"}
+                        texto={"¿Cuántos?"}
+                   />
+                </div>            
             </div>
             
         </header>
