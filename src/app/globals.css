@@ -8,3 +8,28 @@ header{
     background: #FCFCFC;
     box-shadow: 0 0 5px rgb(224, 222, 222);
 }
+
+/* styles.css */
+.menu {
+  position: absolute;
+  top: 70px; /* Ajusta la posición */
+  right: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  z-index: 10; /* Asegura que el menú esté encima de otros elementos */
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.menu li:hover {
+  background-color: #ddd;
+}

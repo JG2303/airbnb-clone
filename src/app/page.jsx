@@ -1,11 +1,12 @@
-import Image from "next/image";
-import Button from "./components/buttons/Button";
-export default function Home() {
-  return (
-    <main>
-       <div className="flex justify-center items-center p-3 ">
-          <button className="bg-amber-800 text-white rounded-2xl p-2 cursor-pointer">Iniciar sesión</button>
-       </div>
-    </main>
-  );
+import Link from "next/link";
+import { auth, currentUser } from "@clerk/nextjs/server";
+
+export default async function Home(){
+    const {userId} = await auth()
+    console.log("usuario logueado :", userId)
+    if(!userId){
+        return <div>Sign in to view this page</div>
+    }
+    const user = await currentUser()
+    return <div className="flex justify-center p-8 text-8xl">Welcome, {user.firstName}!</div>
 }
