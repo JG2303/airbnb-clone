@@ -1,8 +1,8 @@
 export const Filtros = ({label, texto}) =>{
     return(
-        <div className="filtro-lugar  flex flex-col ">
-            <label htmlFor="lugar">{label}</label>
-            <input className="border-none" type="text" id="lugar" placeholder={texto}  />
+        <div className="flex flex-col px-5 h-full justify-center hover:bg-stone-100 rounded-full">
+            <label htmlFor={label}>{label}</label>
+            <input className="border-none" type="text" id={label} placeholder={texto}  />
         </div>    
     )
 } 

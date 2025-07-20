@@ -1,12 +1,13 @@
 'use client'
+import { SignedIn, SignedOut, SignOutButton, SignUpButton } from '@clerk/nextjs'
+import { Menu } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
-
 export default function DropdownMenu() {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef(null)
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event) => {        
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsOpen(false)
       }
@@ -19,9 +20,9 @@ export default function DropdownMenu() {
     <div className="relative inline-block text-left" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm hover:shadow-md transition"
+        className="bg-gray-200  border-none rounded-full px-3 py-2 cursor-pointer shadow-sm hover:shadow-md transition"
       >
-        ☰
+        <Menu className='w-4 h-6' />
       </button>
 
       {isOpen && (
@@ -36,7 +37,16 @@ export default function DropdownMenu() {
           </div>
           <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Recomendar a un anfitrión</div>
           <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Encuentra un coanfitrión</div>
-          <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Iniciar sesión o registrarse</div>
+          <SignedOut>              
+              <SignUpButton mode="modal">                
+                  <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Iniciar sesión o registrarse</div>
+              </SignUpButton>                  
+          </SignedOut>
+          <SignedIn>
+              <SignOutButton>
+                    <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Cerrar sesión</div>
+              </SignOutButton>
+          </SignedIn>
         </div>
       )}
     </div>
