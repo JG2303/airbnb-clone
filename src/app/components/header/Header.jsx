@@ -5,9 +5,36 @@ import { Filtros } from "../Filtros/Filtros"
 import Link from "next/link"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import DropdownMenu from "../Dropdown/Dropdown"
-export const Header = ()=>{
+import ModalServicios from "../Modals/modalServicios"
+import { useEffect, useState } from "react"
+import { Search } from "lucide-react"
+
+export const Header = ({children})=>{
+    const itemsAirbnb = [
+        {
+            titulo: "Alojamientos",
+            src : "/images/hospedaje.png",
+            link:"/alojamiento"
+        },
+        {
+            titulo:"Experiencias",
+            src:"/images/experiencias.png",
+            link:"/experiencias"
+        },
+        {
+            titulo:"Servicios",
+            src:"/images/servicios.png",
+            link:"/servicios"
+        }
+    ]
+    const [mostrarModal, setMostrarModal] = useState(false)
+    const [seleccionado, setSeleccionado] = useState(null)   
+    const handleModal = ()=>{
+        setMostrarModal(true)
+    }
     return(
-        <div className="containerHeader flex  flex-col gap-3">
+        <div className="flex  flex-col gap-3 "> 
+            {children}           
             <div className="encabezado flex justify-between ">
                 <div className="logo-container">
                     <Link href="/">
@@ -17,75 +44,112 @@ export const Header = ()=>{
                             width={125}
                             height={56}
                             priority={true}
-                        />
+                            />
                     </Link>
                 </div>
-                <nav className={`${styles.nav} ml-25`}>
+                <nav className={`${styles.nav} ml-[11%] `}>
                     <ul className={styles.servicios}>
-                        <li> 
-                            <Link href="/alojamiento">
-                                <Image 
-                                    src="/images/hospedaje.png"
-                                    alt="Hospedaje"
-                                    width={46}
-                                    height={46}
-                                />  
-                                Alojamiento 
-                            </Link>             
-                        </li>
-                        <li>
-                            <Link href="/experiencias" >
-                                <Image                                     
-                                    src="/images/experiencias.png"
-                                    alt="experiencias"
-                                    width={46}
-                                    height={46}
-                                />
-                                    Experiencias
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/servicios">
-                                <Image 
-                                    src="/images/servicios.png"
-                                    alt="servicios"
-                                    width={46}
-                                    height={46}
-                                />
-                                Servicios
-                            </Link>
-                        </li>
+                        {
+                            itemsAirbnb.map((item)=>(                                
+                                <li key={item.titulo}>                                    
+                                    <Link href={item.link}>
+                                        <Image 
+                                            src={item.src}
+                                            alt={item.titulo}
+                                            width={52}
+                                            height={52}
+                                        />
+                                        {item.titulo}
+                                    </Link>
+                                </li>
+                            ))
+                        }
+                        
                     </ul>
                 </nav>
                 <div className="credenciales flex gap-5 justify-center items-center">
                     <button 
-                    className=" cursor-pointer hover:bg-stone-100 rounded-4xl p-2"
-                    >Conviértete en anfitrion</button>
+                        className=" cursor-pointer hover:bg-stone-100 rounded-4xl p-2"
+                        onClick={handleModal}
+                    >
+                        Conviértete en anfitrion
+                    </button>
+                    {
+                        mostrarModal &&(                            
+                            <ModalServicios onClose={() => setMostrarModal(false)} >
+                               <div className="flex flex-col">
+                                    <div className="flex gap-5">
+                                        {
+                                            itemsAirbnb.map((item)=>( 
+                                                <div 
+                                                    key={item.titulo}
+                                                    onClick={()=>setSeleccionado(item.link)} 
+                                                    className={`border-1 cursor-pointer p-[6rem] rounded-xl ${seleccionado === item.link ? "border-black border-3 " : "border-gray-300"}`}>                                    
+                                                        <Image 
+                                                            src={item.src}
+                                                            alt={item.titulo}
+                                                            width={80}
+                                                            height={80}
+                                                        />
+                                                        {item.titulo}
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                        <hr className="m-3 w-full bg-gray-400 border-gray-300"  />                                        
+                                    <div className="flex flex-col items-end" >
+                                        {
+                                            seleccionado 
+                                                ?(
+                                                    <Link href={seleccionado}>
+                                                        <button
+                                                            onClick={()=>(setMostrarModal(false), setSeleccionado(null))}
+                                                            className={`cursor-pointer bg-blue-200 rounded-[10px] p-2 w-[120px]`}
+                                                            >
+                                                            Siguiente
+                                                        </button>                                                        
+                                                    </Link>
+                                                ):(
+                                                    <button
+                                                        disabled
+                                                        className="'bg-gray-300 bg-gray-400 text-white cursor-not-allowed p-2 w-[120px] rounded-[10px]"
+                                                    >
+                                                      Siguiente      
+                                                    </button>
+                                                )
+                                        }
+                                        
+                                    </div>
+                               </div>                                
+                            </ModalServicios>
+                        )
+                    }
                     <SignedIn >
                         <UserButton />
                     </SignedIn>                    
                     <DropdownMenu />                           
                 </div> 
             </div>
-                <div className="container-filtros flex justify-center">
-                    <div className="flex shadow-sm/30 w-fit h-18 rounded-full ">                
+                <div className="container-filtros flex justify-center pb-4">
+                    <div className="flex shadow-sm/30 w-fit h-18 rounded-full bg-white">                
                         <Filtros 
-                                label={"Dónde"}
-                                texto={"Explora destinos"}
+                            label={"Dónde"}
+                            texto={"Explora destinos"}
                         />
-                            <Filtros 
-                                label={"Check-in"}
-                                texto={"Agrega fecha"}
+                        <Filtros 
+                            label={"Check-in"}
+                            texto={"Agrega fecha"}
                         />
-                            <Filtros 
-                                label={"Check-out"}
-                                texto={"Agrega fecha"}
+                        <Filtros 
+                            label={"Check-out"}
+                            texto={"Agrega fecha"}
                         />
-                            <Filtros 
-                                label={"Quién"}
-                                texto={"¿Cuántos?"}
-                        />  
-                        <button>Buscar</button>                        
+                        <div className="flex">
+                            <Filtros  label={"Quién"} texto={"¿Cuántos?"}>
+                                    <button className="px-4 py-3 h-[80%] mt-2 mr-1.5 bg-red-500 rounded-[50%] cursor-pointer hover:bg-red-700 "><Search color={"white"} /></button> 
+                            </Filtros> 
+                        </div>
+                         
                     </div>       
                </div>     
            </div>

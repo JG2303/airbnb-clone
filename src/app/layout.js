@@ -1,23 +1,10 @@
-import { Inter, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs'
-
+import { Inter} from "next/font/google";
+import { ClerkProvider} from '@clerk/nextjs'
 import { Header } from "./components/header/Header";
+import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -25,14 +12,14 @@ export const metadata = {
   title: "Airbnb",
   description: "Proyecto clon Airbnb",
 };
-
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="es" className={`${inter.variable} ${geistMono.variable}`}>
+      <html lang="es" className={`${inter.variable} `}>
         <body>
           <header>            
-            <Header />
+            <Header>
+            </Header>
           </header>
           {children}
         </body> 
