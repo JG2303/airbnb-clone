@@ -7,12 +7,7 @@ export const metadata = {
 export default function Servicios(){
     return(
         <div className="flex justify-center">
-            <Image 
-                src="/images/servicios.png"
-                alt="servicios-image"
-                width={300}
-                height={300}
-            />
+           <p>Acá va el contenido de Servicios</p>
         </div>
     )
 }

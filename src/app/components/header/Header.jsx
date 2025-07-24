@@ -44,7 +44,7 @@ export const Header = ({children})=>{
                             width={125}
                             height={56}
                             priority={true}
-                            />
+                        />
                     </Link>
                 </div>
                 <nav className={`${styles.nav} ml-[11%] `}>
@@ -76,7 +76,7 @@ export const Header = ({children})=>{
                     </button>
                     {
                         mostrarModal &&(                            
-                            <ModalServicios onClose={() => setMostrarModal(false)} >
+                            <ModalServicios seleccionado={setSeleccionado} onClose={() => setMostrarModal(false)} >
                                <div className="flex flex-col">
                                     <div className="flex gap-5">
                                         {
@@ -133,19 +133,26 @@ export const Header = ({children})=>{
                 <div className="container-filtros flex justify-center pb-4">
                     <div className="flex shadow-sm/30 w-fit h-18 rounded-full bg-white">                
                         <Filtros 
+                            id={"donde"}
                             label={"Dónde"}
                             texto={"Explora destinos"}
                         />
                         <Filtros 
+                            id={"in"}
                             label={"Check-in"}
                             texto={"Agrega fecha"}
                         />
                         <Filtros 
+                            id={"out"}
                             label={"Check-out"}
                             texto={"Agrega fecha"}
                         />
                         <div className="flex">
-                            <Filtros  label={"Quién"} texto={"¿Cuántos?"}>
+                            <Filtros  
+                                id={"quien"}
+                                label={"Quién"} 
+                                texto={"¿Cuántos?"}
+                            >
                                     <button className="px-4 py-3 h-[80%] mt-2 mr-1.5 bg-red-500 rounded-[50%] cursor-pointer hover:bg-red-700 "><Search color={"white"} /></button> 
                             </Filtros> 
                         </div>

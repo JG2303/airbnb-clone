@@ -1,4 +1,6 @@
-const ModalServicios = ({onClose, children}) => {
+import { X } from "lucide-react";
+
+const ModalServicios = ({onClose, children, seleccionado}) => {
     return(
         <div
             style={{
@@ -22,7 +24,13 @@ const ModalServicios = ({onClose, children}) => {
             >
                 <div className="flex flex-col">
                     <div >
-                        <button className="p-2 cursor-pointer hover:bg-gray-100 hover:rounded-full " onClick={onClose}>❌</button>
+                        <button 
+                            className="p-2 cursor-pointer hover:bg-gray-100 hover:rounded-full " 
+                            onClick={()=>{
+                                onClose();
+                                seleccionado(null)
+                            }}
+                        ><X /></button>
                     </div>
                     <h1 className="text-center text-3xl mb-2 ">¿Que te gustaria compartir?</h1>
                     <div className="flex justify-center items-center gap-8 p-1">

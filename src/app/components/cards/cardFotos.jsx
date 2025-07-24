@@ -22,16 +22,17 @@ export default function CardFotos({children}){
             {fotos.map((foto) => (
                 <div              
                     key={foto.id}
-                    className="max-w-[300px] max-h-[800px] "                    
+                    className="w-[260px] max-h-[800px] cursor-pointer focu "                    
                 >
                     <Image
                         src={foto.url}
                         alt={`Foto ${foto.id}`}
-                        width={300}
-                        height={300}
-                        className="w-[300px] h-[300px] object-cover rounded-2xl "
+                        width={250}
+                        height={250}
+                        className="w-[250px] h-[250px] object-cover rounded-2xl "
                     />  
-                    <p className="break-all">{foto.url}</p>                  
+                    <p className="break-all">Apartamento en Cartagena  </p>   
+                    <p>2500000</p>               
                     {children}
                 </div>
             ))}
