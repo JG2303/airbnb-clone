@@ -136,16 +136,19 @@ export const Header = ({children})=>{
                             id={"donde"}
                             label={"Dónde"}
                             texto={"Explora destinos"}
+                            tipo={"text"}
                         />
                         <Filtros 
                             id={"in"}
                             label={"Check-in"}
                             texto={"Agrega fecha"}
+                            tipo={"date"}
                         />
                         <Filtros 
                             id={"out"}
                             label={"Check-out"}
                             texto={"Agrega fecha"}
+                            tipo={"date"}
                         />
                         <div className="flex">
                             <Filtros  

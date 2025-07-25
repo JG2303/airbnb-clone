@@ -3,7 +3,7 @@ import { useState } from "react"
 import DropdownBase from "../Dropdown/DropdownBase"
 import { Header } from "../header/Header"
 import DropdownLocalizacion from "../Dropdown/DropdownLocalizacion"
-export const Filtros = ({id,label, texto, children}) =>{
+export const Filtros = ({id,label, texto,tipo = "text", children}) =>{
     const [itemClick, setItemClick] = useState(null)
     const [isAbierto, setIsAbierto] = useState(false)
     function handleItemClick(id){
@@ -22,7 +22,7 @@ export const Filtros = ({id,label, texto, children}) =>{
                         <input 
                             id={id}
                             className="border-none cursor-pointer focus:outline-none focus:border-none"
-                            type="text"
+                            type={tipo}
                             placeholder={texto}  />
                     </div>    
                         {children}                        
