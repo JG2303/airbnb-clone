@@ -10,5 +10,6 @@ header{
     top: 0;
     background: #FCFCFC;
     box-shadow: 0 0 5px rgb(224, 222, 222);
+    z-index: 1000;
 }
 

@@ -1,10 +1,5 @@
 
-.formulario div{
-    display: flex;
-    justify-content:center;
-    align-items: center;
-    
-}
+
 .formulario legend{
     text-align: center;
     font-weight: 600;

@@ -1,13 +1,13 @@
 'use client'
 import Image from "next/image"
 import styles from "./Header.module.css"
-import { Filtros } from "../Filtros/Filtros"
 import Link from "next/link"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import DropdownMenu from "../Dropdown/Dropdown"
-import ModalServicios from "../Modals/modalServicios"
+import { Filtros } from "../Filtros/Filtros"
 import { useEffect, useState } from "react"
 import { Search } from "lucide-react"
+import ModalServicios from "../Modals/modalServicios"
 
 export const Header = ({children})=>{
     const itemsAirbnb = [
@@ -130,38 +130,38 @@ export const Header = ({children})=>{
                     <DropdownMenu />                           
                 </div> 
             </div>
-                <div className="container-filtros flex justify-center pb-4">
-                    <div className="flex shadow-sm/30 w-fit h-18 rounded-full bg-white">                
-                        <Filtros 
-                            id={"donde"}
-                            label={"Dónde"}
-                            texto={"Explora destinos"}
-                            tipo={"text"}
-                        />
-                        <Filtros 
-                            id={"in"}
-                            label={"Check-in"}
-                            texto={"Agrega fecha"}
-                            tipo={"date"}
-                        />
-                        <Filtros 
-                            id={"out"}
-                            label={"Check-out"}
-                            texto={"Agrega fecha"}
-                            tipo={"date"}
-                        />
-                        <div className="flex">
-                            <Filtros  
-                                id={"quien"}
-                                label={"Quién"} 
-                                texto={"¿Cuántos?"}
-                            >
-                                    <button className="px-4 py-3 h-[80%] mt-2 mr-1.5 bg-red-500 rounded-[50%] cursor-pointer hover:bg-red-700 "><Search color={"white"} /></button> 
-                            </Filtros> 
-                        </div>
-                         
-                    </div>       
-               </div>     
+            {/* <div className="container-filtros flex justify-center pb-4">
+                <div className="flex shadow-sm/30 w-fit h-18 rounded-full bg-white">                
+                    <Filtros 
+                        id={"donde"}
+                        label={"Dónde"}
+                        texto={"Explora destinos"}
+                        tipo={"text"}
+                    />
+                    <Filtros 
+                        id={"in"}
+                        label={"Check-in"}
+                        texto={"Agrega fecha"}
+                        tipo={"date"}
+                    />
+                    <Filtros 
+                        id={"out"}
+                        label={"Check-out"}
+                        texto={"Agrega fecha"}
+                        tipo={"date"}
+                    />
+                    <div className="flex">
+                        <Filtros  
+                            id={"quien"}
+                            label={"Quién"} 
+                            texto={"¿Cuántos?"}
+                        >
+                                <button className="px-4 py-3 h-[80%] mt-2 mr-1.5 bg-red-500 rounded-[50%] cursor-pointer hover:bg-red-700 "><Search color={"white"} /></button> 
+                        </Filtros> 
+                    </div>
+                        
+                </div>       
+            </div>      */}
            </div>
     )
 }

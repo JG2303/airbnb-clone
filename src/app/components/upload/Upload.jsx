@@ -19,13 +19,15 @@ export default function CargarImagen(){
             }
             reader.readAsDataURL(file)
         }
-    }    
+    }  
+    
     const handleUpload = async (e) =>{
         e.preventDefault();
         if(!imagen) return
+        if(!user) return <div>No hay usuarios</div>
         try {
           setUploading(true)
-          const fileName = `${user.firstName}-${user}-${Date.now()}.jpg`
+          const fileName = `${user.firstName}-${user.id}-${Date.now()}.jpg`
           // sube las fotos al bucket : fotos
           const {error} = await supabase.storage
               .from('fotos')
@@ -56,13 +58,16 @@ export default function CargarImagen(){
             fileInputRef.current.value = ''
         }
     }   
-    return (
-        <div >
-          <form onSubmit={handleUpload}>
+
+    useEffect(()=>{
+      console.log('Soy la iamgen de Upload :',imagen)
+    },[imagen])
+    return (        
+          <div>
             <div >
               <input
                 type="file"
-                multiple
+                // multiple
                 accept="image/*"
                 onChange={handleImageChange}
                 disabled={uploading}
@@ -87,13 +92,12 @@ export default function CargarImagen(){
                   <button type="button" onClick={handleCancel}>
                     Cancelar
                   </button>
-                  <button type="submit" disabled={uploading} >
+                  <button type="button" onClick={handleUpload} disabled={uploading} >
                     {uploading ? 'Subiendo...' : 'Subir Imagen'}
                   </button>
                 </div>
               </div>
             )}
-          </form>
-        </div>
+          </div> 
       );
 } 
