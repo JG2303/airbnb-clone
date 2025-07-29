@@ -19,10 +19,7 @@ export default function TipoAlojamiento({tipo, setTipo}){
         { id: "casa-huespedes", nombre: "Casa de huéspedes", icono: "Hotel" },
         { id: "hotel", nombre: "Hotel", icono: "BedDouble" },
         { id: "casa-flotante", nombre: "Casa flotante", icono: "Waves"}
-    ];
-    const handleseleccion = (id) =>{
-        setTipo(id)
-    }    
+    ];      
     return(
         <fieldset className="grid grid-cols-3 gap-4 p-10 border">
             <legend className="col-span-4 text-lg  mb-4">¿Cuál de estas opciones describe mejor tu espacio?</legend>
@@ -34,7 +31,7 @@ export default function TipoAlojamiento({tipo, setTipo}){
                             key={opcion.id}
                             type="button"
                             role="radio"
-                            onClick={()=>handleseleccion(opcion.id)}
+                            onClick={()=>setTipo(opcion.id)}
                             className={`h-full flex flex-col gap-2 items-start justify-between p-5 cursor-pointer w-full text-left  hover:outline-black hover:outline-3 rounded-md  transition-all duration-100 
                                     ${
                                         tipo === opcion.id

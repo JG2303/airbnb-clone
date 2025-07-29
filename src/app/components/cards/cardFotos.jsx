@@ -1,41 +1,50 @@
 'use client'
-import { mostrarTodos } from "@/lib/supabaseCrud";
+import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-export default function CardFotos({children}){    
-    const [fotos, setFotos] = useState([]);
+export default function CardFotos({children}){ 
+    const [dataAlojamiento, setDataAlojamiento] = useState([])  
     const [error, setError] = useState(null);
-    async function cargarFotos() {
-        const { resultado, error } = await mostrarTodos('fotos'); 
-        if (error) {
-            setError(error);
-        } else {
-            setFotos(resultado);                
+    const mostrarDatos = async () =>{
+        const {data, error} = await supabase
+            .from('alojamiento')
+            .select('*')
+        if(error){
+            setError(error)
+        }else{
+            setDataAlojamiento(data)
         }
-    }
+    }    
     useEffect(() => {
-        cargarFotos();
-    }, [fotos]);    
-    if (error) return <p>Error al cargar las fotos: {error.message}</p>;
+        mostrarDatos()     
+    }, []);    
+    if (error) return <p>Error al cargar las fotos: {error.message}</p>;    
     return (        
-        <div className="flex flex-wrap justify-center p-10 gap-5">            
-            {fotos.map((foto) => (
-                <div              
-                    key={foto.id}
-                    className="w-[260px] max-h-[800px] cursor-pointer focu "                    
-                >
-                    <Image
-                        src={foto.url}
-                        alt={`Foto ${foto.id}`}
-                        width={250}
-                        height={250}
-                        className="w-[250px] h-[250px] object-cover rounded-2xl "
-                    />  
-                    <p className="break-all">Apartamento en Cartagena  </p>   
-                    <p>2500000</p>               
-                    {children}
-                </div>
-            ))}
+        <div className="flex flex-wrap gap-3 p-4">
+            {
+                dataAlojamiento.map((alojamiento, i)=>(                    
+                    <div  key={i} className=" flex flex-col items-center w-[250px] h-[300px]  rounded-2xl ">                        
+                        <div className="">
+                            <Link href={`/rooms/${alojamiento.id}`}>
+                                <Image 
+                                    src={alojamiento.fotos?.[1]}
+                                    alt={alojamiento.titulo}
+                                    width={250}
+                                    height={200}
+                                    className="w-[250px] h-[200px] object-cover rounded-2xl"                                
+                                />
+                            </Link>
+                        </div>
+                        <div className=" text-sm">
+                            <h1>{alojamiento.titulo}</h1>
+                            <h3>{alojamiento.descripcion}</h3>
+                            <p>{`${alojamiento.ciudad}/${alojamiento.departamento}`}</p>
+                            <p className="font-medium">{alojamiento.precio}</p>
+                        </div>
+                    </div>
+                ))
+            }
         </div>
     );
 }

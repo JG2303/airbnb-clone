@@ -17,8 +17,9 @@ export default function Cantidad({infoAlojamiento, setInfoAlojamiento}){
     return(
         <fieldset className="border p-5">
             <legend>Agrega algunos datos básicos sobre tu espacio</legend>
+            {/* -------------------------------huespedes------------------------- */}
             <div>
-                <label htmlFor="huespedes">Huéspedes</label>
+                <p>Huéspedes</p>
                 <div className="flex gap-2">
                     <button
                         type="button" 
@@ -35,9 +36,28 @@ export default function Cantidad({infoAlojamiento, setInfoAlojamiento}){
                     </button>
                 </div>
             </div>
-
+               {/* -----------------habitaciones--------------------------------- */}
             <div>
-                <label htmlFor="camas">Camas</label>
+                <p>Habitaciones</p>
+                <div className="flex gap-2">
+                    <button
+                        type="button" 
+                        onClick={()=>handleQuitar('habitaciones')}
+                        className="shadow px-2"
+                    >-
+                    </button>
+                    <p>{infoAlojamiento.habitaciones}</p>
+                    <button 
+                        type="button" 
+                        onClick={()=>handleAgregar('habitaciones')}
+                        className="shadow px-2"
+                    >+
+                    </button>
+                </div>
+            </div>
+                {/* --------------------------camas--------------------------- */}
+            <div>
+                <p>Camas</p>
                 <div className="flex gap-2">
                     <button
                         type="button" 
@@ -54,9 +74,9 @@ export default function Cantidad({infoAlojamiento, setInfoAlojamiento}){
                     </button>
                 </div>
             </div>
-
+                {/* ---------------------------------baños----------------------------- */}
             <div>
-                <label htmlFor="baños">Baños</label>
+                <p>Baños</p>
                 <div className="flex gap-2">
                     <button
                         type="button" 

@@ -1,7 +1,6 @@
 import Image from "next/image"
 import {useState } from "react"
-export default function PreviewImagenes({preview, setPreview}){
-    
+export default function PreviewImagenes({preview, setPreview}){    
     // const [click, setClick] = useState('')
     const handleImageChange = (e) =>{
         const files = Array.from(e.target.files)
@@ -36,9 +35,7 @@ export default function PreviewImagenes({preview, setPreview}){
                             <button
                                 type="button"
                                 className="bg-red-500 text-white px-3 py-1 rounded-3xl absolute top-2 right-2 hover:bg-red-700 transition-all"
-                                onClick={()=>{
-                                                handleDelete(i)                                                
-                                            }}
+                                onClick={()=>handleDelete(i)}
                             >x</button>
                         </div>
                     )) 
@@ -47,7 +44,6 @@ export default function PreviewImagenes({preview, setPreview}){
             <input 
                 type="file" 
                 multiple
-                name=""
                 id="imegen"
                 accept="image/*"
                 onChange={handleImageChange}
