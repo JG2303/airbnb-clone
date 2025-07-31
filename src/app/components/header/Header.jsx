@@ -1,13 +1,13 @@
 'use client'
 import Image from "next/image"
-import styles from "./Header.module.css"
+import styles from "./header.module.css"
 import Link from "next/link"
 import { SignedIn, UserButton } from "@clerk/nextjs"
-import DropdownMenu from "../Dropdown/Dropdown"
-import { Filtros } from "../Filtros/Filtros"
+import DropdownMenu from "../dropdown/dropdown"
+import { Filtros } from "../filtros/filtros"
 import { useEffect, useState } from "react"
 import { Search } from "lucide-react"
-import ModalServicios from "../Modals/modalServicios"
+import ModalServicios from "../modals/modalServicios"
 
 export const Header = ({children})=>{
     const itemsAirbnb = [

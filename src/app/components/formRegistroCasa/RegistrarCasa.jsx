@@ -1,12 +1,12 @@
 'use client'
 import {useState } from 'react'
-import Cantidad from './Elementos/cantidad'
-import DireccionAlojamiento from './Elementos/direccionAlojamiento'
-import FotosHospedaje from './Elementos/fotosHospedaje'
-import QueAlojamiento from './Elementos/queAlojamiento'
-import ServiciosHospedaje from './Elementos/serviciosHospedaje'
-import TipoAlojamiento from './Elementos/tipoAlojamiento'
-import styles from './RegistrarCasa.module.css'
+import Cantidad from './elements/cantidad'
+import DireccionAlojamiento from './elements/direccionAlojamiento'
+import FotosHospedaje from './elements/fotosHospedaje'
+import QueAlojamiento from './elements/queAlojamiento'
+import ServiciosHospedaje from './elements/serviciosHospedaje'
+import TipoAlojamiento from './elements/tipoAlojamiento'
+import styles from './registrarCasa.module.css'
 import { useUser } from '@clerk/nextjs'
 import { supabase } from '@/lib/supabaseClient'
 export default function RegistrarCasa(){
@@ -33,17 +33,6 @@ export default function RegistrarCasa(){
     const [titulo, setTitulo] = useState('')
     const [descripcion, setDescripcion] = useState('')
     const [precio, setPrecio] = useState('')
-    // useEffect(()=>{
-    //     console.log('Alojamiento : ', tipo)
-    //     console.log('Tipo de alojamiento',tipoAlojamiento)
-    //     console.log('Direccion : ',ubicacion )
-    //     console.log('Info alojamiento : ',infoAlojamiento)
-    //     console.log('Servicios :',servicios)
-    //     console.log('Fotos :',rutas)
-    //     console.log('Titulo: ', titulo)
-    //     console.log('Descripcion :', descripcion)
-    //     console.log('Precio : ', precio)
-    //  },[titulo, descripcion, precio])   
     if(!isLoaded) return <div>Cargando...</div>
     if(!user) return <div>No puedes ver esta pagina si no esta logueado</div>   
     const dataFormulario = {

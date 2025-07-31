@@ -1,4 +1,4 @@
-import RegistrarCasa from "../components/formRegistroCasa/RegistrarCasa";
+import RegistrarCasa from "../components/formRegistroCasa/registrarCasa";
 
 export const metadata = {
   title: 'Alojamiento | Airbnb',

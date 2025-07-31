@@ -1,32 +1,72 @@
 'use client'
+import CalendarioRango from "@/app/components/calendario/calendario"
+import DropdownHuespedes from "@/app/components/dropdown/DropHuespedes"
 import { supabase } from "@/lib/supabaseClient"
 import { Heart, Share } from "lucide-react"
 import Image from "next/image"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { useReservaStore } from "@/app/stores/storeReserva"
+import { differenceInCalendarDays, format } from "date-fns"
+import { useUser } from "@clerk/nextjs"
 export default function Rooms(){ 
-    const [dataset, setDataset] = useState(null) 
-    const params = useParams()
-    const id = params.roomId 
+    const {user} = useUser()
+    const [dataset, setDataset] = useState(null)    
+    const [open, setOpen] = useState(false)    
+    const route = useRouter() 
+    const [fechaInicio, setFechaInicio] = useState(null)
+    const [fechaFin, setFechaFin] = useState(null)
+    const {roomId} = useParams()
+    const setDatosReserva = useReservaStore((state)=>state.setDatosReserva)
+    const diasTotal = differenceInCalendarDays(fechaFin, fechaInicio)
     const obtenerData = async () =>{
         const {data, error} = await supabase
             .from('alojamiento')
             .select('*')
-            .eq('id', id)
+            .eq('id', roomId)
             .single()
         if(error){
             console.error('Error al obtener los datos: ', error)
             return null
         }
         setDataset(data)
-    }
+        
+    }   
+    const [dataHuspedes, setDataHuespedes] =useState({
+        adultos:1,
+        niños:0,
+        bebes:0,
+        mascotas:0,
+        huespedes:1,
+    })   
+    const handleDataReserva = (textoBoton)=>{
+        if(textoBoton === "Reserva" ){    
+            if(!user)return alert('inicia sesion')        
+            route.push(`/rooms/${roomId}/reserva`)            
+            setDatosReserva({
+                id:roomId,
+                idUser: user.id,
+                adultos: dataHuspedes.adultos,
+                niños: dataHuspedes.niños,
+                bebes: dataHuspedes.bebes,
+                mascotas: dataHuspedes.mascotas,
+                foto:dataset.fotos[0],
+                titulo:dataset.titulo,
+                precio:dataset.precio,                
+                fechaInicio: format(fechaInicio, "yyy/MM/dd"),
+                fechaFin: format(fechaFin, "yyy/MM/dd"),
+                diasTotal,                
+            }) 
+        }else{
+            setOpen(true)
+        }
+    } 
     useEffect(()=>{
         obtenerData()
-    },[])
+    },[])    
     
-    return(
-     
-       <div className="container w-[80%] m-auto border" >
+    return(     
+       <div className="container w-[60%] md:w-[90%] m-auto " >
             {dataset &&(
                 <div>
                 {/* -------------------------------------fotos------------------------------- */}
@@ -59,7 +99,9 @@ export default function Rooms(){
                             />
                         </div>
                         {
-                            dataset.fotos.filter((f,i)=>i !== 0 && i <= 4).map((foto,i)=>(
+                            dataset.fotos
+                            .filter((f,i)=>i !== 0 && i <= 4)
+                            .map((foto,i)=>(
                                 <div key={i} className="relative w-full h-full overflow-hidden">
                                     <Image 
                                         src={foto}
@@ -76,21 +118,56 @@ export default function Rooms(){
                 <section>
                     <div className="flex py-6 ">                        
                         {/* ---------------descripcion----------------- */}
-                        <article className="w-[60%] border border-red-400">
-                           <section>
-                                <div className="h-[200vh]"></div>
+                        <article className="w-[65%]  h-[100vh]">
+                           <section>                                
+                                <h2 className="text-lg">{`Habitacion privada en ${dataset.alojamiento} con servicios incluidos en ${dataset.ciudad}, ${dataset.pais}`}</h2>
+                                <p>{`${dataset.huespedes} huéspedes • ${dataset.habitaciones} Habitación(es) • ${dataset.camas} cama(s) • ${dataset.baños} baño(s)`} </p>
                            </section>
                         </article>
 
-                        {/* -----------------reserva------------------- */}
-                        <article className="w-[40%] border border-blue-400 p-5">
-                            <div className="w-full h-30 bg-amber-300 sticky top-30 "></div>
+                        {/* -------------------------------------reserva------------------------------------ */}
+                        <article className=" flex flex-col w-[40%]  border-blue-400 p-5">
+                            <div className=" flex flex-col gap-4 shadow-2xl  rounded-xl p-4 sticky top-30">
+                                <div className="w-full h-30 ">
+                                    <p className="text-[45px]">{`$${dataset.precio} COP`}</p>
+                                    <p>{`por ${dataset} noches`}</p>                                
+                                </div>
+                                <div className="border border-gray-400 rounded-xl">
+                                    <div>                                    
+                                        <CalendarioRango 
+                                            open={open}
+                                            setOpen={setOpen}
+                                            fechaInicio={fechaInicio}
+                                            fechaFin={fechaFin}
+                                            setFechaInicio={setFechaInicio}
+                                            setFechaFin={setFechaFin}
+                                        />
+                                    </div>                               
+                                    <div>                                                                        
+                                        <DropdownHuespedes huespedesPermitidos={dataset.huespedes} setDataHuespedes={setDataHuespedes}/>          
+                                    </div>  
+                                </div> 
+                                <div>
+                                    {/* <Link href={`/rooms/${roomId}/reserva`}> */}
+                                        <button 
+                                            type="button" 
+                                            className="bg-red-500 px-5 py-4 w-full rounded-full cursor-pointer text-white text-[20px]"  
+                                            onClick={(e)=>handleDataReserva(e.target.textContent)}                                          
+                                        >
+                                            {
+                                                diasTotal > 0 ? "Reserva"
+                                                              : "Comprobar disponibilidad"
+                                            }
+                                        </button>
+                                    {/* </Link> */}
+                                </div>
+                            </div>
                         </article>
                     </div>
                 </section>
                 {/* ---------------------------------------calificaciones y comentarios---------------------- */}
                 <section>
-                    <div className="h-[100vh] border border-amber-950"></div>
+                    <div className="h-[200vh] border border-amber-950"></div>
                 </section>
                 </div>
                 

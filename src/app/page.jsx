@@ -1,5 +1,5 @@
 import CardFotos from "./components/cards/cardFotos";
-import Footer from "./components/Footer/Footer";
+import Footer from "./components/footer/footer";
 export default function Home(){ 
     return (
     <>        

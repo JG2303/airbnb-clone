@@ -1,8 +1,6 @@
 'use client'
 import { useState } from "react"
-import DropdownBase from "../Dropdown/DropdownBase"
-import { Header } from "../header/Header"
-import DropdownLocalizacion from "../Dropdown/DropdownLocalizacion"
+import DropdownBase from "../dropdown/dropdownBase"
 export const Filtros = ({id,label, texto,tipo = "text", children}) =>{
     const [itemClick, setItemClick] = useState(null)
     const [isAbierto, setIsAbierto] = useState(false)
@@ -29,7 +27,7 @@ export const Filtros = ({id,label, texto,tipo = "text", children}) =>{
                         {itemClick === "donde" && isAbierto && (
                                 <div className="absolute top-full mt-2 z-10">                                    
                                     <DropdownBase estado={isAbierto} onClose={()=>setIsAbierto(false)}>
-                                        <DropdownLocalizacion />
+                                        
                                     </DropdownBase>
                                 </div>
                         )}                        

@@ -37,8 +37,7 @@ export default function CardFotos({children}){
                             </Link>
                         </div>
                         <div className=" text-sm">
-                            <h1>{alojamiento.titulo}</h1>
-                            <h3>{alojamiento.descripcion}</h3>
+                            <h1>{alojamiento.titulo}</h1>                            
                             <p>{`${alojamiento.ciudad}/${alojamiento.departamento}`}</p>
                             <p className="font-medium">{alojamiento.precio}</p>
                         </div>

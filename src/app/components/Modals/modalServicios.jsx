@@ -1,5 +1,4 @@
 import { X } from "lucide-react";
-
 const ModalServicios = ({onClose, children, seleccionado}) => {
     return(
         <div
