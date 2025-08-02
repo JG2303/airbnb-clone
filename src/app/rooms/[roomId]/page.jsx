@@ -7,16 +7,18 @@ import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useReservaStore } from "@/app/stores/storeReserva"
-import { differenceInCalendarDays, format } from "date-fns"
+import { differenceInCalendarDays, eachDayOfInterval, format, parseISO } from "date-fns"
 import { useUser } from "@clerk/nextjs"
 export default function Rooms(){ 
     const {user} = useUser()
-    const [dataset, setDataset] = useState(null)    
+    const [dataset, setDataset] = useState(null)
+    const [dataReserva, setDataReserva] = useState(null)    
     const [open, setOpen] = useState(false)    
     const route = useRouter() 
     const [fechaInicio, setFechaInicio] = useState(null)
     const [fechaFin, setFechaFin] = useState(null)
     const {roomId} = useParams()
+    let fechasReservadas = []
     const setDatosReserva = useReservaStore((state)=>state.setDatosReserva)
     const diasTotal = differenceInCalendarDays(fechaFin, fechaInicio)
     const obtenerData = async () =>{
@@ -32,6 +34,30 @@ export default function Rooms(){
         setDataset(data)
         
     }   
+      const ObtenerDataReserva = async () => {
+        const {data: datReserva , error: errorReserva} = await supabase
+            .from('reservas')
+            .select(`fecha_entrada,
+                     fecha_salida`)
+            .eq('id_alojamiento',roomId)
+        if(errorReserva){
+            console.error('error al obtener datosa de alojamiento :',  errorReserva.message)            
+        }
+        setDataReserva(datReserva)
+             
+    } 
+    const diasReserva = () =>{              
+        
+        if(dataReserva){
+            dataReserva.forEach((reserva)=>{
+            const inicio = parseISO(reserva.fecha_entrada)
+            const fin = parseISO(reserva.fecha_salida)
+            const dias = eachDayOfInterval({start: inicio, end:fin})
+            fechasReservadas.push(...dias)
+        })
+        }
+    }
+    
     const [dataHuspedes, setDataHuespedes] =useState({
         adultos:1,
         niños:0,
@@ -58,13 +84,17 @@ export default function Rooms(){
                 diasTotal,                
             }) 
         }else{
+            ObtenerDataReserva()
             setOpen(true)
         }
     } 
     useEffect(()=>{
-        obtenerData()
-    },[])    
-    
+        obtenerData()        
+    },[])   
+    useEffect(()=>{
+        diasReserva()
+    },[dataReserva])
+    console.log('fechas',dataReserva)
     return(     
        <div className="container w-[60%] md:w-[90%] m-auto " >
             {dataset &&(
@@ -136,6 +166,7 @@ export default function Rooms(){
                                     <div>                                    
                                         <CalendarioRango 
                                             open={open}
+                                            fechasReservadas={fechasReservadas}
                                             setOpen={setOpen}
                                             fechaInicio={fechaInicio}
                                             fechaFin={fechaFin}

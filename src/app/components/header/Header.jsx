@@ -4,9 +4,7 @@ import styles from "./header.module.css"
 import Link from "next/link"
 import { SignedIn, UserButton } from "@clerk/nextjs"
 import DropdownMenu from "../dropdown/dropdown"
-import { Filtros } from "../filtros/filtros"
-import { useEffect, useState } from "react"
-import { Search } from "lucide-react"
+import { useState } from "react"
 import ModalServicios from "../modals/modalServicios"
 
 export const Header = ({children})=>{
@@ -52,7 +50,7 @@ export const Header = ({children})=>{
                         {
                             itemsAirbnb.map((item)=>(                                
                                 <li key={item.titulo}>                                    
-                                    <Link href={item.link}>
+                                    <Link href={item.titulo ==="Alojamientos" ? '/' : item.link}>
                                         <Image 
                                             src={item.src}
                                             alt={item.titulo}
@@ -117,8 +115,7 @@ export const Header = ({children})=>{
                                                       Siguiente      
                                                     </button>
                                                 )
-                                        }
-                                        
+                                        }                                        
                                     </div>
                                </div>                                
                             </ModalServicios>

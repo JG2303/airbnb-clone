@@ -10,8 +10,9 @@ import {
   isSameDay,
   isBefore,
   isAfter,
+  
 } from "date-fns";
-export default function CalendarioRango({fechaInicio, fechaFin, setFechaInicio, setFechaFin, open, setOpen}) {
+export default function CalendarioRango({fechaInicio, fechaFin, setFechaInicio,fechasReservadas, setFechaFin, open, setOpen}) {
   const [hover, setHover] = useState(null);
   const [mesPrincipal, setMesPrincipal] = useState(new Date());
   const contenedorRef = useRef(null);   
@@ -26,16 +27,37 @@ export default function CalendarioRango({fechaInicio, fechaFin, setFechaInicio, 
   }, []);
 
   const seleccionarFecha = (fecha) => {
-    if (!fechaInicio || (fechaInicio && fechaFin)) {
-      setFechaInicio(fecha);
-      setFechaFin(null);
-    } else if (isBefore(fecha, fechaInicio)) {
-      setFechaInicio(fecha);
-    } else {
+      if (!fechaInicio || (fechaInicio && fechaFin)) {
+        setFechaInicio(fecha);
+        setFechaFin(null);
+        return;
+      }
+
+      if (isBefore(fecha, fechaInicio)) {
+        setFechaInicio(fecha);
+        return;
+      }
+
+      // Generar todas las fechas del rango tentativo
+      const rangoTentativo = eachDayOfInterval({
+        start: fechaInicio,
+        end: fecha,
+      });
+
+      // Verificar si alguna fecha reservada está en el rango
+      const hayReservadas = rangoTentativo.some((dia) =>
+        fechasReservadas.some((f) => isSameDay(new Date(f), dia))
+      );
+
+      if (hayReservadas) {
+        alert("El rango contiene fechas reservadas. Elige otro rango.");
+        return;
+      }
+
       setFechaFin(fecha);
       setOpen(false);
-    }
-  };
+    };
+
 
   const estaEnRango = (fecha) => {
     if (!fechaInicio || (!fechaFin && !hover)) return false;
@@ -73,10 +95,9 @@ export default function CalendarioRango({fechaInicio, fechaFin, setFechaInicio, 
       const enRango = estaEnRango(fecha);
       const esInicio = esIgual(fecha, fechaInicio);
       const esFin = esIgual(fecha, fechaFin);
-      const deshabilitado = isBefore(
-        fecha,
-        new Date(new Date().setHours(0, 0, 0, 0))
-      );
+      const deshabilitado = 
+                            isBefore(fecha, new Date(new Date().setHours(0, 0, 0, 0))) ||
+                            fechasReservadas .some((f) => isSameDay(new Date(f), fecha));
       celdas.push(
         <button
           key={fecha.toISOString()}
@@ -85,7 +106,7 @@ export default function CalendarioRango({fechaInicio, fechaFin, setFechaInicio, 
           onMouseEnter={() => setHover(fecha)}
           onMouseLeave={() => setHover(null)}
           className={`
-            h-10 w-10 rounded-full transition-all duration-200 text-sm
+            h-10  w-10 rounded-full transition-all duration-200 text-sm
             ${deshabilitado ? "opacity-30 cursor-not-allowed" : ""}
             ${enRango ? "bg-blue-200 text-white" : ""}
             ${esInicio || esFin ? "bg-blue-500 text-white font-bold" : ""}
@@ -145,7 +166,7 @@ export default function CalendarioRango({fechaInicio, fechaFin, setFechaInicio, 
       <div className="grid grid-cols-7 gap-1">{generarCeldas(mes)}</div>
     </div>
   );
-
+  
   return (
     <div ref={contenedorRef} className="relative inline-block text-left w-full">
       <div className="flex w-full border-b border-gray-400 ">
@@ -174,7 +195,8 @@ export default function CalendarioRango({fechaInicio, fechaFin, setFechaInicio, 
       </div>
       {/* -------------------------------calendario abierto---------------------------------------- */}
       {open && (
-        <div className="absolute z-20 mt-2 bg-white border p-6 rounded-xl shadow-lg flex flex-row gap-x-8">
+        // --------------------------contenedor calendario-----------------
+        <div className="absolute right-10 z-20 mt-2 bg-white border p-6 rounded-xl shadow-lg flex flex-row gap-x-8">
           {renderCalendario(mesPrincipal, true)}
           {renderCalendario(addMonths(mesPrincipal, 1))}
 

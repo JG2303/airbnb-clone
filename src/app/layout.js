@@ -13,7 +13,11 @@ export const metadata = {
 };
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>      
+    <ClerkProvider
+      appearance={{
+        cssLayerName: 'clerk',
+      }}
+    >      
         <html lang="es" className={`${inter.variable} `}>
           <body>
             <header>            
