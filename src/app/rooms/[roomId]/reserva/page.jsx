@@ -1,3 +1,12 @@
+/**
+     * Sube una reserva a la tabla 'reservas' de Supabase usando los datos del usuario y la reserva.
+     * Construye el objeto de reserva, lo muestra en consola y trata de insertarlo en la base de datos.
+     * Muestra una alerta si hay error, de lo contrario confirma la subida exitosa y redirige a la página principal.
+     *
+     * @async
+     * @function uploadReserva
+     * @returns {Promise<void>} Se resuelve cuando la reserva se sube y ocurre la navegación.
+     */
 'use client'
 import { useReservaStore } from "@/app/stores/storeReserva";
 import { supabase } from "@/lib/supabaseClient";
@@ -12,7 +21,7 @@ export default function Reserva(){
     const {roomId} = useParams()
     const route = useRouter()
     const datosReserva = useReservaStore((state)=>state.datosReserva)
-    if(!datosReserva) return
+    if(!datosReserva) return    
     const uploadReserva = async () =>{
         const data = {
             id_usuario: user.id,
@@ -36,7 +45,6 @@ export default function Reserva(){
                 alert('Datos subidos ')
                 route.push('/')
             }
-
     }
     return(
         <div className="grid grid-cols-5 p-20 gap-10 w-[60%] mx-auto">

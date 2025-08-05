@@ -1,5 +1,5 @@
 'use client'
-export default function Cantidad({infoAlojamiento, setInfoAlojamiento}){
+export default function Cantidad({children,infoAlojamiento, setInfoAlojamiento}){
     const handleAgregar = (campo)=> {        
         setInfoAlojamiento({
             ...infoAlojamiento,
@@ -93,6 +93,7 @@ export default function Cantidad({infoAlojamiento, setInfoAlojamiento}){
                     </button>
                 </div>
             </div>
+            {children}
         </fieldset>
     )
 }

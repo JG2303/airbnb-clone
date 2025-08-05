@@ -1,19 +1,20 @@
-'use client'
+"use client";
 import {useState } from 'react'
-import Cantidad from './elements/cantidad'
-import DireccionAlojamiento from './elements/direccionAlojamiento'
-import FotosHospedaje from './elements/fotosHospedaje'
-import QueAlojamiento from './elements/queAlojamiento'
-import ServiciosHospedaje from './elements/serviciosHospedaje'
-import TipoAlojamiento from './elements/tipoAlojamiento'
-import styles from './registrarCasa.module.css'
 import { useUser } from '@clerk/nextjs'
-import { supabase } from '@/lib/supabaseClient'
-export default function RegistrarCasa(){
-    const {user, isLoaded}= useUser() 
-    // if(!user) return(<div>Acceso denegado</div>)
-    const [tipo, setTipo] = useState("")
-    const [tipoAlojamiento, setTipoAlojamiento]= useState('')    
+import dynamic from 'next/dynamic';
+import useFavoritos from '@/hooks/useFavoritos';
+const TipoAlojamiento = dynamic(() => import('./elements/tipoAlojamiento'))
+const QueAlojamiento = dynamic(() => import('./elements/queAlojamiento'))
+const DireccionAlojamiento = dynamic(() => import('./elements/direccionAlojamiento'))
+const Cantidad = dynamic(() => import('./elements/cantidad'))
+const ServiciosHospedaje = dynamic(() => import('./elements/serviciosHospedaje'))
+const FotosHospedaje = dynamic(() => import('./elements/fotosHospedaje'))
+export default function RegistrarCasa() {
+	const {user} = useUser()
+  	const [pasoActual, setPasoActual] = useState(0);
+  	const [tipo, setTipo] = useState("")
+    const [tipoAlojamiento, setTipoAlojamiento]= useState('')
+	const {insertAlojamiento, error} = useFavoritos()    
     const [ubicacion, setUbicacion] = useState({
         pais:"",
         direccion:"",
@@ -25,19 +26,70 @@ export default function RegistrarCasa(){
     const [infoAlojamiento, setInfoAlojamiento]=useState({
         huespedes:1,
         habitaciones:1,
-        camas:2,
-        baños: 3
+        camas:1,
+        baños: 1
     })    
     const [servicios, setServicios] = useState([])
     const [rutas, setRutas] = useState(null)
     const [titulo, setTitulo] = useState('')
     const [descripcion, setDescripcion] = useState('')
-    const [precio, setPrecio] = useState('')
-    if(!isLoaded) return <div>Cargando...</div>
-    if(!user) return <div>No puedes ver esta pagina si no esta logueado</div>   
-    const dataFormulario = {
+    const [precio, setPrecio] = useState('')  
+
+  	const siguientePaso = () => setPasoActual((prev) => prev + 1);
+ 	 const pasoAnterior = () => setPasoActual((prev) => prev - 1);
+
+  	const pasos = [
+		<TipoAlojamiento
+			tipo={tipo}
+			setTipo={setTipo}
+		/>,
+		<QueAlojamiento
+			tipoAlojamiento={tipoAlojamiento}
+			setTipoAlojamiento={setTipoAlojamiento}		
+		/>,
+		<DireccionAlojamiento
+			ubicacion={ubicacion}
+			setUbicacion={setUbicacion}
+		/>,
+		<Cantidad
+			infoAlojamiento={infoAlojamiento}
+			setInfoAlojamiento={setInfoAlojamiento}
+		/>,
+		<ServiciosHospedaje
+			servicios={servicios}
+			setServicios={setServicios}
+		/>,
+		<FotosHospedaje
+			rutas={rutas}
+			setRutas={setRutas}
+    	/>,
+		<fieldset>
+			<legend>Título</legend>
+			<textarea
+				value={titulo}
+				onChange={(e)=>(setTitulo(e.target.value))}
+			/>
+		</fieldset>,
+		<fieldset>
+			<legend>Descripción</legend>
+			<textarea
+				value={descripcion}
+				onChange={(e) =>setDescripcion(e.target.value)}
+			/>
+		</fieldset>,
+		<fieldset>
+			<legend>Precio</legend>
+			<input
+				type="text"
+				value={precio}
+				onChange={(e) => setPrecio(e.target.value)}
+			/>
+		</fieldset>,
+  	];
+
+  	 const dataFormulario = {
         alojamiento: tipo,
-        id_user: user.id,
+        id_user: user?.id,
         tipo_alojamiento : tipoAlojamiento,
         pais: ubicacion.pais,
         departamento : ubicacion.departamento,
@@ -53,87 +105,43 @@ export default function RegistrarCasa(){
         titulo: titulo,
         descripcion : descripcion,
         precio: precio
-    }    
-    const uploadData = async ()=>{
-        const {data:existente} = await supabase
-            .from('alojamiento')
-            .select('*')
-            .eq('direccion', ubicacion.direccion)
-        if(existente.length === 0){
-            const {error} = await supabase  
-                .from('alojamiento')
-                .insert(dataFormulario)
-            if (error) {
-            console.error('Error al insertar:', error.message);
-            } else {
-            console.log('Inserción exitosa:', dataFormulario);
-            }       
-        }else{
-            return(
-                alert('Ya esta direccion fue registrada') 
-            )
-        }
-    }
-    return(
-        <form className={`${styles.formulario} w-[50%]`} action=""  >           
-            <TipoAlojamiento tipo={tipo} setTipo={setTipo} />
-            <QueAlojamiento tipoAlojamiento={tipoAlojamiento} setTipoAlojamiento={setTipoAlojamiento}/>
-            <fieldset className='border p-5'>
-                <legend>¿Dónde se encuentra tu espacio?</legend>
-                <div >
-                    <input className='w-[80%] mx-auto' id='ubicacion-api' type="text" placeholder='Ingresa tu dirección' />
-                </div>
-            </fieldset>
-            <DireccionAlojamiento ubicacion={ubicacion} setUbicacion={setUbicacion}/>
-            <Cantidad infoAlojamiento={infoAlojamiento} setInfoAlojamiento={setInfoAlojamiento}/>
-            <ServiciosHospedaje servicios={servicios} setServicios={setServicios} />
-            <FotosHospedaje rutas={rutas} setRutas={setRutas}/>
-            <fieldset>
-                <legend>Ahora, ponle un título a tu --casa ecológica--</legend>
-                <div>                    
-                    <textarea 
-                        className='border w-full text-3xl rounded-xl' 
-                        name="titulo" 
-                        id="titulo" 
-                        maxLength={32} 
-                        cols="30" 
-                        rows="3"
-                        value={titulo}
-                        onChange={(e)=>setTitulo(e.target.value)}
-                    >
-                    </textarea>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>Escribe tu descripción</legend>                
-                <div>
-                    <textarea 
-                        className='border w-full text-3xl rounded-xl' 
-                        name="descripcion" 
-                        id="descripcion" 
-                        maxLength={500} 
-                        cols="30" 
-                        rows="10"
-                        value={descripcion}
-                        onChange={(e)=>setDescripcion(e.target.value)}
-                    >
-                    </textarea>
-                </div>
-            </fieldset>
-            <fieldset className='flex justify-center'>
-                <legend>Configura un precio base para los días entre semana</legend>
-                <input 
-                    type="text" 
-                    value={precio}
-                    onChange={(e)=>setPrecio(e.target.value)}
-                    className='font-medium'
-                />
-            </fieldset>   
-            <button
-                type='button'
-                onClick={uploadData}
-                className='bg-cyan-700 px-5 py-3 rounded-2xl'
-            >Registrar</button>         
-        </form>
-    )
+    }  
+	const uploadData = async ()=>{
+		await insertAlojamiento(ubicacion.direccion, dataFormulario)
+		if(error) console.log(error) 
+	}  
+  return (
+    <div className="w-[50%] mx-auto">
+		<form>			 
+			{pasos[pasoActual]}			
+
+			<div className="flex justify-between mt-5">
+				{pasoActual > 0 && (
+					<button
+					type="button"
+					onClick={pasoAnterior}
+					className="bg-gray-300 px-4 py-2 rounded"
+					>
+					Atrás
+					</button>
+				)}
+				{pasoActual < pasos.length - 1 ? (
+					<button
+					type="button"
+					onClick={siguientePaso}
+					className="bg-blue-500 text-white px-4 py-2 rounded"
+					>
+					Siguiente
+					</button>
+				) : (
+					<button
+						type='button'
+						onClick={uploadData}
+						className='bg-cyan-700 px-5 py-3 rounded-2xl'
+					>Registrar</button>  
+				)}
+			</div>
+		</form>
+	</div>
+  );
 }

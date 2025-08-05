@@ -2,6 +2,7 @@ import { Inter} from "next/font/google";
 import { ClerkProvider} from '@clerk/nextjs'
 import { Header } from "./components/header/header";
 import "./globals.css";
+import Footer from "./components/footer/footer";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -19,12 +20,12 @@ export default function RootLayout({ children }) {
       }}
     >      
         <html lang="es" className={`${inter.variable} `}>
-          <body>
+          <body >
             <header>            
-              <Header>
-              </Header>
+              <Header />              
             </header>
             {children}
+            <Footer />
           </body> 
         </html>        
     </ClerkProvider>

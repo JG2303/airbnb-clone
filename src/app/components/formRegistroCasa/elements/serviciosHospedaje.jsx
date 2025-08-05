@@ -1,26 +1,28 @@
 'use client'
-import * as iconosLucide from 'lucide-react'
+
+import { AlarmSmoke, CircleDot, Droplets, FireExtinguisher, Flame, HelpCircle, Laptop, LayoutGrid, Music, ParkingCircle, ParkingSquare, ShowerHead, Tv, Umbrella, Utensils, WashingMachine, Waves, Wifi, Wind } from "lucide-react";
+
 export default function ServiciosHospedaje({servicios, setServicios}){
     const opciones = [
-        {id: "wifi", nombre : "Wifi", icono: "Wifi"},
-        {id: "tv", nombre: "TV", icono: "Tv"},
-        {id: "cocina", nombre:"Cocina", icono: "Utensils"},
-        {id: "lavadora", nombre:"Lavadora", icono: "WashingMachine"},
-        {id: "estacionamiento-gratis", nombre:"Estacionamiento gratuito en las instalaciones", icono: "ParkingCircle"},
-        {id: "estacionamiento-pago", nombre:"Estacionamiento de pago en las instalaciones", icono: "ParkingSquare"},
-        {id: "aire-acondicionado", nombre:"Aire acondicionado", icono: "Wind"},
-        {id: "zona-trabajo", nombre:"Zona de trabajo", icono: "Laptop"},
-        {id: "piscina", nombre:"Piscina", icono: "Waves"},
-        {id: "jacuzzi", nombre:"Jacuzzi", icono: "Droplets"},
-        {id: "terraza", nombre:"Terraza", icono: "LayoutGrid"},
-        {id: "parrilla", nombre:"Parrilla", icono: "Flame"},
-        {id: "piano", nombre:"Piano", icono: "Music"},
-        {id: "mesa-billar", nombre:"Mesa de billar", icono: "CircleDot"},
-        {id: "chimenea-interior", nombre:"Chimenea interior", icono: "Fireplace"},
-        {id: "ducha-exterior", nombre:"Ducha exterior", icono: "ShowerHead"},
-        {id: "detector-humo", nombre:"Detector de humo", icono: "AlarmSmoke"},
-        {id: "extintor", nombre:"Extintor de incendios", icono: "FireExtinguisher"},
-        {id: "playa", nombre:"Acceso a la playa", icono: "Umbrella"}
+        {id: "wifi", nombre : "Wifi", icono: Wifi},
+        {id: "tv", nombre: "TV", icono: Tv},
+        {id: "cocina", nombre:"Cocina", icono: Utensils},
+        {id: "lavadora", nombre:"Lavadora", icono: WashingMachine},
+        {id: "estacionamiento-gratis", nombre:"Estacionamiento gratuito en las instalaciones", icono: ParkingCircle},
+        {id: "estacionamiento-pago", nombre:"Estacionamiento de pago en las instalaciones", icono: ParkingSquare},
+        {id: "aire-acondicionado", nombre:"Aire acondicionado", icono: Wind},
+        {id: "zona-trabajo", nombre:"Zona de trabajo", icono: Laptop},
+        {id: "piscina", nombre:"Piscina", icono: Waves},
+        {id: "jacuzzi", nombre:"Jacuzzi", icono: Droplets},
+        {id: "terraza", nombre:"Terraza", icono: LayoutGrid},
+        {id: "parrilla", nombre:"Parrilla", icono: Flame},
+        {id: "piano", nombre:"Piano", icono: Music},
+        {id: "mesa-billar", nombre:"Mesa de billar", icono: CircleDot},
+        {id: "chimenea-interior", nombre:"Chimenea interior", icono: ""},
+        {id: "ducha-exterior", nombre:"Ducha exterior", icono: ShowerHead},
+        {id: "detector-humo", nombre:"Detector de humo", icono: AlarmSmoke},
+        {id: "extintor", nombre:"Extintor de incendios", icono: FireExtinguisher},
+        {id: "playa", nombre:"Acceso a la playa", icono: Umbrella}
     ];
     const handleseleccion = (id) =>{
         setServicios((prev) =>
@@ -33,7 +35,7 @@ export default function ServiciosHospedaje({servicios, setServicios}){
             <legend className="col-span-4 text-lg  mb-4">Cuéntale a los huéspedes todo lo que tu espacio tiene para ofrecer</legend>
             {
                 opciones.map((servicio)=>{
-                    const IconoServicio= iconosLucide[servicio.icono] || iconosLucide.HelpCircle
+                    const IconoServicio= servicio.icono || HelpCircle
                     return(
                         <button
                             key={servicio.id}                            

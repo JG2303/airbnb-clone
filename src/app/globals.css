@@ -1,6 +1,42 @@
 @import "tailwindcss";
+
+:root{
+    /* ------------------------colores------------------- */
+    --shade-01: #FFFFFF;
+    --shade-02: #222222;    
+    --shade-02-5: rgba(34, 34, 34, 0.05);
+    --shade-02-30: rgba(34, 34, 34, 0.3);
+    /* --------------------------neutral------------------ */
+    --neutral-01: #F7F7F7;
+    --neutral-02: #EBEBEB;
+    --neutral-03: #DDDDDD;
+    --neutral-04: #D3D3D3;
+    --neutral-05: #C2C2C2;
+    --neutral-06: #B0B0B0;
+    --neutral-07: #717171;
+    --neutral-08: #5E5E5E; 
+    /* --------------------------primarios----------------- */
+    --primary-01: #F6475F;
+    --primary-02: #FF385C;
+    /* ---------------------------Gradient----------------- */
+    --gradient-01: linear-gradient(90deg, #f6475f, #ff385c);
+    --gradient-02: linear-gradient(90deg, #ff385c, #d6246e);
+    --gradient-03: linear-gradient(90deg, #d6246e, #a0215e);
+    /* ----------------------------error------------------- */
+    --error-01:#FEF8F6;
+    --error-02:#C13515;
+    /* ------------------------------accents---------------- */
+    --acent-01: #F6D7DF;
+    --acent-02: #D03660;
+    --Discount: #008A05;
+    --link: #004CC4;
+    /* -----------------------------texto--------------------------- */
+
+
+}
+
 body{
-    background: ffffff;
+    background: #FFFFFF;
 }
 
 header{
@@ -12,4 +48,23 @@ header{
     z-index: 1000;
 }
 
-
+footer{
+  background: var(--neutral-01);
+  color:var(--neutral-08)
+}
+@layer base {
+  h1 {
+    font-size: 25px;
+  }
+  h2 {
+    font-size: 13px;
+  }
+}
+@layer components {
+  .card {
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: --spacing(6);
+    box-shadow: var(--shadow-xl);
+  }
+}

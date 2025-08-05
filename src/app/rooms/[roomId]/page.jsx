@@ -1,7 +1,36 @@
+
+/**
+ * El componente Rooms muestra información detallada sobre una habitación específica,
+ * incluyendo imágenes, descripción, precio y opciones de reserva.
+ * Obtiene datos de la habitación y fechas reservadas desde Supabase, gestiona
+ * la selección de huéspedes y maneja la lógica de reserva.
+ *
+ * @component
+ * @returns {JSX.Element} Interfaz renderizada con detalles y opciones de reserva.
+ *
+ * @example
+ * // Uso en una ruta de Next.js
+ * <Rooms />
+ *
+ * @remarks
+ * - Requiere autenticación de usuario para realizar una reserva.
+ * - Integra Supabase para la obtención de datos.
+ * - Utiliza Zustand para la gestión del estado de reserva.
+ *
+ * @dependencies
+ * - CalendarioRango: Componente selector de rango de fechas.
+ * - DropdownHuespedes: Dropdown para selección de huéspedes.
+ * - Supabase: Cliente de base de datos.
+ * - Clerk: Autenticación de usuarios.
+ * - date-fns: Utilidades para manipulación de fechas.
+ *
+ * @todo
+ * - Implementar la sección de calificaciones y comentarios.
+ * - Mejorar el manejo de errores y estados de carga.
+ */
 'use client'
 import CalendarioRango from "@/app/components/calendario/calendario"
 import DropdownHuespedes from "@/app/components/dropdown/DropHuespedes"
-import { supabase } from "@/lib/supabaseClient"
 import { Heart, Share } from "lucide-react"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
@@ -9,8 +38,10 @@ import { useEffect, useState } from "react"
 import { useReservaStore } from "@/app/stores/storeReserva"
 import { differenceInCalendarDays, eachDayOfInterval, format, parseISO } from "date-fns"
 import { useUser } from "@clerk/nextjs"
+import useFavoritos from "@/hooks/useFavoritos"
 export default function Rooms(){ 
     const {user} = useUser()
+    const {alojamientoId, datosReserva} = useFavoritos()
     const [dataset, setDataset] = useState(null)
     const [dataReserva, setDataReserva] = useState(null)    
     const [open, setOpen] = useState(false)    
@@ -21,33 +52,21 @@ export default function Rooms(){
     let fechasReservadas = []
     const setDatosReserva = useReservaStore((state)=>state.setDatosReserva)
     const diasTotal = differenceInCalendarDays(fechaFin, fechaInicio)
-    const obtenerData = async () =>{
-        const {data, error} = await supabase
-            .from('alojamiento')
-            .select('*')
-            .eq('id', roomId)
-            .single()
-        if(error){
-            console.error('Error al obtener los datos: ', error)
-            return null
-        }
+    // ------------------datos para cargar en la pagina -------------------
+     
+    const obtenerData = async ()=>{
+        const {data, error} = await alojamientoId(roomId)
+        if(error) console.error('error al obtener data de alojamiento: ', error.message)
         setDataset(data)
-        
-    }   
-      const ObtenerDataReserva = async () => {
-        const {data: datReserva , error: errorReserva} = await supabase
-            .from('reservas')
-            .select(`fecha_entrada,
-                     fecha_salida`)
-            .eq('id_alojamiento',roomId)
-        if(errorReserva){
-            console.error('error al obtener datosa de alojamiento :',  errorReserva.message)            
-        }
-        setDataReserva(datReserva)
-             
     } 
-    const diasReserva = () =>{              
-        
+         
+    const ObtenerDataReserva = async () => {
+        const {data, error} = await datosReserva(roomId)
+        if(error) console.error('Error al obtener datos de reserva :', error.message)
+        setDataReserva(data)
+    }
+
+    const diasReserva = () =>{
         if(dataReserva){
             dataReserva.forEach((reserva)=>{
             const inicio = parseISO(reserva.fecha_entrada)
@@ -65,10 +84,12 @@ export default function Rooms(){
         mascotas:0,
         huespedes:1,
     })   
+
     const handleDataReserva = (textoBoton)=>{
         if(textoBoton === "Reserva" ){    
             if(!user)return alert('inicia sesion')        
-            route.push(`/rooms/${roomId}/reserva`)            
+            route.push(`/rooms/${roomId}/reserva`)    
+        // ---------------------------estado global------------------        
             setDatosReserva({
                 id:roomId,
                 idUser: user.id,
@@ -94,7 +115,7 @@ export default function Rooms(){
     useEffect(()=>{
         diasReserva()
     },[dataReserva])
-    console.log('fechas',dataReserva)
+    
     return(     
        <div className="container w-[60%] md:w-[90%] m-auto " >
             {dataset &&(
@@ -104,7 +125,7 @@ export default function Rooms(){
                     {/* ----------------titulo + iconos------------------------- */}
                     <section className="flex justify-between items-center w-full">
                         <div className="">
-                            <h1>{dataset.titulo}</h1>
+                            <h1 className="text-h1">{dataset.titulo}</h1>
                         </div>
                         <div className="flex  gap-5">
                             <div className="flex gap-1">

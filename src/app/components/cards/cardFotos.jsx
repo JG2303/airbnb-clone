@@ -1,3 +1,17 @@
+
+/**
+ * El componente CardFotos muestra una lista de tarjetas de alojamientos con imágenes, títulos, ubicación y precio.
+ * Permite a los usuarios agregar o quitar alojamientos de sus favoritos.
+ * Si el usuario no está autenticado, se muestra un modal para registrarse.
+ *
+ * @componente
+ * @param {Object} props
+ * @param {string} [props.lugar="todos"] - Determina qué alojamientos mostrar ("todos" para todos, "favoritos" para favoritos).
+ * @returns {JSX.Element} Las tarjetas de alojamiento renderizadas con funcionalidad de favoritos.
+ *
+ * @ejemplo
+ * <CardFotos lugar="todos" />
+ */
 'use client'
 import { SignUp, useUser } from "@clerk/nextjs"
 import { Heart } from "lucide-react"
@@ -70,8 +84,8 @@ export default function CardFotos({lugar="todos"}){
         < >
             {
                 dataAlojamiento.map((alojamiento)=>(                    
-                    <div  key={alojamiento.id} className="" >                        
-                        <div className="relative w-[250px] h-[400px] md:w-[250px] md:h-[250px]   ">
+                    <div  key={alojamiento.id}  >                        
+                        <div className="relative w-full h-[150px] md:w-[250px] md:h-[250px]   ">
                             <Link href={`/rooms/${alojamiento.id}`}>
                                 <Image 
                                     src={alojamiento.fotos?.[1]}
@@ -87,6 +101,7 @@ export default function CardFotos({lugar="todos"}){
                                 onClick={()=>uploadDataFavoritos(alojamiento.id)}
                              >
                                 <Heart 
+                                    size={30}
                                     color="white"                                
                                     className={`bg-none cursor-pointer transform transition hover:scale-110 
                                                ${favorito.includes(alojamiento.id) 
@@ -96,9 +111,9 @@ export default function CardFotos({lugar="todos"}){
                             </div>
                         </div>
                         <div className=" text-sm">
-                            <h1>{alojamiento.titulo}</h1>                            
+                            <h2>{alojamiento.titulo}</h2>                            
                             <p>{`${alojamiento.ciudad}/${alojamiento.departamento}`}</p>
-                            <p className="font-medium">{alojamiento.precio}</p>
+                            <p className="font-medium text-gray-500">${alojamiento.precio} COP por </p>
                         </div>
                     </div>
                 ))                

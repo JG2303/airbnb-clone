@@ -33,6 +33,7 @@ export default function DropdownMenu() {
           <SignedIn>
             <Link href={'/favoritos'}><div className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Lista favoritos</div></Link>
             <Link href={'/perfil'}><div  role='button' className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Perfil</div></Link>
+            <Link href={'/alojamiento'} prefetch><div  role='button' className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Convierte en anfitrion</div></Link>
           </SignedIn>
           <div className="px-4 py-2 font-semibold text-black">
             Conviértete en anfitrión
