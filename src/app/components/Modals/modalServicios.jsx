@@ -51,7 +51,7 @@ const ModalServicios = ({ onClose, itemsAirbnb, seleccionado, setSeleccionado, s
                         : "border-gray-300"
                     }`}
                   >
-                    <Image
+                    <img
                       src={item.src}
                       alt={item.titulo}
                       width={80}
@@ -64,12 +64,12 @@ const ModalServicios = ({ onClose, itemsAirbnb, seleccionado, setSeleccionado, s
               <hr className="m-3 w-full bg-gray-400 border-gray-300" />
               <div className="flex flex-col items-end">
                 {seleccionado ? (
-                  <Link href={seleccionado}>
+                  <Link href={seleccionado} >
                     <button
                       onClick={() => (
                         setMostrarModal(false), setSeleccionado(null)
                       )}
-                      className={`cursor-pointer bg-blue-200 rounded-[10px] p-2 w-[120px]`}
+                      className={`cursor-pointer bg-blue-200 rounded-[10px] p-2 w-[120px] `}
                     >
                       Siguiente
                     </button>

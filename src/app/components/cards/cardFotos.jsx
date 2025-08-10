@@ -20,37 +20,44 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import Modal from "../modals/modal"
 import useFavoritos from "@/hooks/useFavoritos"
-export default function CardFotos({lugar="todos"}){ 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css' // Importa los estilos CSS
+export default function CardFotos({ciudad}){ 
+    const [isLoading, setIsLoading] = useState(false)
     const [dataAlojamiento, setDataAlojamiento] = useState([])  
     const [error, setError] = useState(null)
-    const [favorito, setFavorito] = useState([])    
+    const [favorito, setFavorito] = useState([]) 
+    const [paginaFavorito, setPaginaFavorito] = useState(false)  
     const {user} = useUser()   
-    const {favoritosUsuario, agregarFavoritos, eliminarFavoritos, isLoadin, cargarDataset} = useFavoritos()     
+    const {favoritosUsuario, agregarFavoritos, eliminarFavoritos, isLoadin, cargarDataset, selectAlojamientoCiudad} = useFavoritos()     
     const [mostrarModal, setMostrarModal]=useState(false)     
     //  ---------------carga de datos iniciales---------------------
     const mostrarDatos = async () =>{ 
-        // --------------------------pagina home-------------------
-        if(lugar==="todos"){            
-            const {data, error} = await cargarDataset()
-            if(error) console.error('Error al cargar datos: ', error.message)
-            setDataAlojamiento(data)            
-        }
+        setIsLoading(true)        
         // -----------------------pagina favoritos para cards-----------------
-        if(lugar==="favoritos"){ 
-            const {data, error} = await favoritosUsuario(user.id)           
+        if(ciudad==="favoritos"){ 
+            const {data, error} = await favoritosUsuario(user?.id)           
             const lista = data?.map(obj => obj.alojamiento)
-            setDataAlojamiento(lista)            
+            setDataAlojamiento(lista)   
+            setPaginaFavorito(true)         
             if(error) console.log('error con favoritos:', error)
+        }else{            
+            // --------------------------pagina home-------------------
+            const {data, error} = await selectAlojamientoCiudad(ciudad)
+            if(error) console.error('Error al cargar datos: ', error.message)
+            setDataAlojamiento(data)   
+            setPaginaFavorito(false)         
         }
         // -----------------------lista favoritos -----------------------
         if(user){
-            const {data, error} = await favoritosUsuario(user.id)
+            const {data, error} = await favoritosUsuario(user?.id)
             if(error){
                 console.error('Error al consultar listado de favoritos del usuario', errorFavoritos.message)
             }           
             const lista = data.map(obj=>obj.id_alojamiento)                
             setFavorito(lista)
         }
+        setIsLoading(false)
     } 
     // --------------------------fin carga datos iniciale----------------------     
     const uploadDataFavoritos = async (id) =>{
@@ -62,14 +69,19 @@ export default function CardFotos({lugar="todos"}){
         // ---------------------buscar favorito-----------------
         const yaFavorito = favorito.includes(id)
         if(yaFavorito){            
-            const {error}= await eliminarFavoritos(user.id, id)
+            const {error}= await eliminarFavoritos(user?.id, id)
             if(error) console.error('error al eliminar favorito: ', error)
             setFavorito(prev=>prev.filter(fid => fid !== id))
         }else{
-            const {error} = await agregarFavoritos(user.id, id)
+            const {error} = await agregarFavoritos(user?.id, id)
             if(error) console.error('Error al insertar favorito: ', error.message)
             setFavorito(prev=>[...prev, id])
         } 
+    }
+    // ---------------------poner primera letra en mayuscula--------------------
+    const capitalizarPrimeraLetra = (texto) => {
+        if (!texto) return ''
+        return texto.charAt(0).toUpperCase() + texto.slice(1)
     }
     //-------------------cargar datos al montar pagina---------------
     useEffect(() => {
@@ -81,25 +93,36 @@ export default function CardFotos({lugar="todos"}){
 
     if (error) return <p>Error al cargar las fotos: {error.message}</p>;    
     return (        
-        < >
-            {
-                dataAlojamiento.map((alojamiento)=>(                    
+        <>
+            { isLoading ? (
+                <>                
+                    <Skeleton width={300} height={250} style={{ marginBottom: '10px' }} />
+                    <Skeleton count={3} width="100%" height={20} style={{ marginBottom: '5px' }} />
+                    <Skeleton width={150} height={25} style={{ marginTop: '20px' }} />
+                </>
+            )
+             :(
+                dataAlojamiento?.map((alojamiento)=>(                    
                     <div  key={alojamiento.id}  >                        
-                        <div className="relative w-full h-[150px] md:w-[250px] md:h-[250px]   ">
+                        <div className="relative md:w-[250px] md:h-[200px] ">
                             <Link href={`/rooms/${alojamiento.id}`}>
-                                <Image 
-                                    src={alojamiento.fotos?.[1]}
-                                    alt={alojamiento.titulo}
-                                    fill
-                                    sizes="(max-width: 768px) 250px, (max-width: 1024px) 250px, 250px"
-                                    className=" object-cover rounded-2xl"                                
-                                />
+                                <div className={`w-full h-[150px] gap-2  ${paginaFavorito ? "w-full h-[300px]  md:h-[400px]": "md:w-full md:h-[300px]" }`}>
+                                    <Image 
+                                        src={alojamiento.fotos?.[1]}
+                                        alt={alojamiento.id}                                        
+                                        priority 
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"                                 
+                                        className="rounded-3xl object-cover"                                
+                                        fill  
+                                    />
+                                </div>
                             </Link>
                             <div 
                                 role="button" 
                                 className="absolute top-3 right-3"
                                 onClick={()=>uploadDataFavoritos(alojamiento.id)}
                              >
+                                {/* --------------------------------favorito icono------------------- */}
                                 <Heart 
                                     size={30}
                                     color="white"                                
@@ -110,13 +133,13 @@ export default function CardFotos({lugar="todos"}){
                                 />
                             </div>
                         </div>
-                        <div className=" text-sm">
-                            <h2>{alojamiento.titulo}</h2>                            
-                            <p>{`${alojamiento.ciudad}/${alojamiento.departamento}`}</p>
-                            <p className="font-medium text-gray-500">${alojamiento.precio} COP por </p>
+                        <div>
+                            <h2 className="text-[12px] md:text-[18px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>                          
+                            
+                            <p className="font-medium text-gray-500">${alojamiento.precio} COP por noche </p>
                         </div>
                     </div>
-                ))                
+                )))                
             }
             {
                 !user && mostrarModal &&(

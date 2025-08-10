@@ -1,6 +1,4 @@
 'use client'
-import { useState } from "react"
-
 export default function QueAlojamiento({tipoAlojamiento, setTipoAlojamiento}){    
     const opciones = [
         {

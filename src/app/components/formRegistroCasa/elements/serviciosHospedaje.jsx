@@ -1,7 +1,5 @@
 'use client'
-
 import { AlarmSmoke, CircleDot, Droplets, FireExtinguisher, Flame, HelpCircle, Laptop, LayoutGrid, Music, ParkingCircle, ParkingSquare, ShowerHead, Tv, Umbrella, Utensils, WashingMachine, Waves, Wifi, Wind } from "lucide-react";
-
 export default function ServiciosHospedaje({servicios, setServicios}){
     const opciones = [
         {id: "wifi", nombre : "Wifi", icono: Wifi},
@@ -18,7 +16,7 @@ export default function ServiciosHospedaje({servicios, setServicios}){
         {id: "parrilla", nombre:"Parrilla", icono: Flame},
         {id: "piano", nombre:"Piano", icono: Music},
         {id: "mesa-billar", nombre:"Mesa de billar", icono: CircleDot},
-        {id: "chimenea-interior", nombre:"Chimenea interior", icono: ""},
+        {id: "chimenea-interior", nombre:"Chimenea interior", icono: HelpCircle},
         {id: "ducha-exterior", nombre:"Ducha exterior", icono: ShowerHead},
         {id: "detector-humo", nombre:"Detector de humo", icono: AlarmSmoke},
         {id: "extintor", nombre:"Extintor de incendios", icono: FireExtinguisher},

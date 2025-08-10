@@ -52,12 +52,30 @@ footer{
   background: var(--neutral-01);
   color:var(--neutral-08)
 }
+.container-rooms hr{
+  border-color: var(--neutral-02);
+}
+/* ----------------ocultar el scrol horizontal de cards----------- */
+.scroll-oculto {
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* IE 10+ */
+}
+.scroll-oculto::-webkit-scrollbar {
+  display: none;                 /* Chrome, Safari, Edge */
+}
+/* ---------------------------calendario datapicker------------------------ */
+.color{
+  border: 1px solid red
+}
+
+/* -----------------fin calendario------------------------------------------- */
+
 @layer base {
   h1 {
     font-size: 25px;
   }
   h2 {
-    font-size: 13px;
+    font-size: 20px;
   }
 }
 @layer components {

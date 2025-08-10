@@ -19,31 +19,25 @@
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions} from '@headlessui/react'
 import { useEffect, useState } from 'react'
 import useFavoritos from '@/hooks/useFavoritos'
-export default function BuscadorCiudades({filtro, setFiltro}) {
+export default function DropdownFiltros({filtro, setFiltro}) {
   const [ciudades, setCiudades] = useState([])
-  const [query, setQuery] = useState('')
+  const [inputValue, setInputValue] = useState('') 
   const [selectedCiudad, setSelectedCiudad] = useState(null)
-  const {selectCiudad} = useFavoritos()
+  const {selectCiudades} = useFavoritos()
+  // --------------------------------buscar las ciudades de supabase----------------------
   const BuscarCiudades = async () =>{
-    const {data, error} = await selectCiudad()
+    const {data, error} = await selectCiudades()
     if(error) console.log('Error al cargar ciudades: ', error.message)
-    // -----------------crear un array de objectos y eliminar espacios en blanco---------------------------
-    const ciudadesFiltradas = data
-      .map((item, i) => ({
-        id: i,
-        name: item.ciudad,
-      }))
-      .filter((item) => item.name && item.name.trim() !== '')
-    setCiudades(ciudadesFiltradas)
-    
-  }
-  
+    const ciudades = [...new Set(data.map(c=>c.ciudad))]    
+    setCiudades(ciudades)  
+  }  
   const filteredCiudades =
-    query === ''
+    inputValue === ''
       ? ciudades
       : ciudades.filter((ciudad) =>
-          ciudad.name.toLowerCase().includes(query.toLowerCase())
+          ciudad.toLowerCase().includes(inputValue.toLowerCase())
         )
+  
   // -------------------------------------ejecuta funcion de cargar las ciudades al abrir la pagina------------
   useEffect(()=>{
     BuscarCiudades()
@@ -53,40 +47,46 @@ export default function BuscadorCiudades({filtro, setFiltro}) {
     if(selectedCiudad){
       setFiltro({
         ...filtro,
-        lugar:selectedCiudad.name
+        lugar:selectedCiudad
       })
+          
     }
-  },[selectedCiudad])
+  },[selectedCiudad,])
   
   return (
-    <Combobox
-      immediate
-      value={selectedCiudad}
-      onChange={setSelectedCiudad}
-      onClose={() => setQuery('')}      
-    >
-      <ComboboxInput
-        aria-label="Ciudad"
-        placeholder="Buscar ciudad..."
-        displayValue={(ciudad) => ciudad?.name || ''}
-        onChange={(e) => setQuery(e.target.value)}
-        className="p-2  w-full h-18 rounded-full outline-0 cursor-pointer hover:bg-gray-200"
-      />
-      <ComboboxOptions anchor="bottom" className=" w-120 z-3000  bg-white rounded-4xl mt-1  overflow-auto   shadow-md ">
-        <div className='p-3'>destinaciones sugeridas</div>
-        {filteredCiudades.map((ciudad) => (
-          <ComboboxOption
-            key={ciudad.id}
-            value={ciudad}
-            className="px-4 flex g-5 py-2 cursor-pointer hover:bg-blue-100"
-          >     
-            <div className='flex flex-col gap-1'>
-               <p>{ciudad.name}</p>
+    <>  
+      <Combobox
+        immediate
+        value={selectedCiudad}
+        onChange={setSelectedCiudad}
+        onClose={() => setInputValue('')}      
+      >
+        {/* ------------------------------------------el input--------------------------- */}
+        <ComboboxInput
+          aria-label="Ciudad"        
+          placeholder="Explora destinos"
+          displayValue={''}
+          onChange={(e) => setInputValue(e.target.value)}
+          className="px-5 w-full h-18 rounded-full outline-0 cursor-pointer hover:bg-gray-200"
+        />
+        {/* -----------------------------------ventana que contiene las ciudades------------------------- */}
+        <ComboboxOptions anchor="bottom" transition className="  w-120 z-3000  bg-white rounded-4xl mt-1  overflow-auto shadow-md origin-top transition duration-200 ease-out empty:invisible data-closed:scale-95 data-closed:opacity-0 ">
+          <div className='p-3'>destinaciones sugeridas</div>
+          {/* --------------------------------mostrar cada ciudad que se trajo de supabase------------------- */}
+          {filteredCiudades.map((ciudad) => (
+            <ComboboxOption
+              key={ciudad}
+              value={ciudad}
+              className="px-4 flex g-5 py-2 cursor-pointer hover:bg-blue-100"
+            >     
+              <div className='flex flex-col gap-1'>
+                <p>{ciudad}</p>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique ducimus .</p>
-            </div>
-          </ComboboxOption>
-        ))}
-      </ComboboxOptions>
-    </Combobox>
+              </div>
+            </ComboboxOption>
+          ))}
+        </ComboboxOptions>
+      </Combobox>
+    </>
   )
 }

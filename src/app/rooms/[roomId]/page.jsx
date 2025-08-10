@@ -1,55 +1,53 @@
-
-/**
- * El componente Rooms muestra información detallada sobre una habitación específica,
- * incluyendo imágenes, descripción, precio y opciones de reserva.
- * Obtiene datos de la habitación y fechas reservadas desde Supabase, gestiona
- * la selección de huéspedes y maneja la lógica de reserva.
- *
- * @component
- * @returns {JSX.Element} Interfaz renderizada con detalles y opciones de reserva.
- *
- * @example
- * // Uso en una ruta de Next.js
- * <Rooms />
- *
- * @remarks
- * - Requiere autenticación de usuario para realizar una reserva.
- * - Integra Supabase para la obtención de datos.
- * - Utiliza Zustand para la gestión del estado de reserva.
- *
- * @dependencies
- * - CalendarioRango: Componente selector de rango de fechas.
- * - DropdownHuespedes: Dropdown para selección de huéspedes.
- * - Supabase: Cliente de base de datos.
- * - Clerk: Autenticación de usuarios.
- * - date-fns: Utilidades para manipulación de fechas.
- *
- * @todo
- * - Implementar la sección de calificaciones y comentarios.
- * - Mejorar el manejo de errores y estados de carga.
- */
 'use client'
-import CalendarioRango from "@/app/components/calendario/calendario"
 import DropdownHuespedes from "@/app/components/dropdown/DropHuespedes"
-import { Heart, Share } from "lucide-react"
+import { Heart, Search, Share } from "lucide-react"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useReservaStore } from "@/app/stores/storeReserva"
 import { differenceInCalendarDays, eachDayOfInterval, format, parseISO } from "date-fns"
+import { AlarmSmoke, CircleDot, Droplets, FireExtinguisher, Flame, HelpCircle, Laptop, LayoutGrid, Music, ParkingCircle, ParkingSquare, ShowerHead, Tv, Umbrella, Utensils, WashingMachine, Waves, Wifi, Wind } from "lucide-react";
 import { useUser } from "@clerk/nextjs"
 import useFavoritos from "@/hooks/useFavoritos"
+import Mapa from "@/app/components/mapas/mapa"
+import CalendarioFechas from "@/app/components/calendario/calendarioFechas"
+import CalendarioDoble from "@/app/components/calendario/calendarioDoble"
+import Calendario from "@/app/components/calendario/calendario"
+import DropdownHuespedesCelu from "@/app/components/dropdown/DropHuespedesCelu"
+import DropdownCalendarioPc from "@/app/components/dropdown/dropdownCalendarioPc"
 export default function Rooms(){ 
+    const opciones = [
+        {id: "wifi", nombre : "Wifi", icono: Wifi},
+        {id: "tv", nombre: "TV", icono: Tv},
+        {id: "cocina", nombre:"Cocina", icono: Utensils},
+        {id: "lavadora", nombre:"Lavadora", icono: WashingMachine},
+        {id: "estacionamiento-gratis", nombre:"Estacionamiento gratuito en las instalaciones", icono: ParkingCircle},
+        {id: "estacionamiento-pago", nombre:"Estacionamiento de pago en las instalaciones", icono: ParkingSquare},
+        {id: "aire-acondicionado", nombre:"Aire acondicionado", icono: Wind},
+        {id: "zona-trabajo", nombre:"Zona de trabajo", icono: Laptop},
+        {id: "piscina", nombre:"Piscina", icono: Waves},
+        {id: "jacuzzi", nombre:"Jacuzzi", icono: Droplets},
+        {id: "terraza", nombre:"Terraza", icono: LayoutGrid},
+        {id: "parrilla", nombre:"Parrilla", icono: Flame},
+        {id: "piano", nombre:"Piano", icono: Music},
+        {id: "mesa-billar", nombre:"Mesa de billar", icono: CircleDot},
+        {id: "chimenea-interior", nombre:"Chimenea interior", icono: HelpCircle},
+        {id: "ducha-exterior", nombre:"Ducha exterior", icono: ShowerHead},
+        {id: "detector-humo", nombre:"Detector de humo", icono: AlarmSmoke},
+        {id: "extintor", nombre:"Extintor de incendios", icono: FireExtinguisher},
+        {id: "playa", nombre:"Acceso a la playa", icono: Umbrella}
+    ];
     const {user} = useUser()
     const {alojamientoId, datosReserva} = useFavoritos()
     const [dataset, setDataset] = useState(null)
+    const [fechasReservadas, setFechasReservadas] = useState([])
     const [dataReserva, setDataReserva] = useState(null)    
-    const [open, setOpen] = useState(false)    
+    const [open, setOpen] = useState(false)  
+    const [openPc, setOpenPc] = useState(false)  
     const route = useRouter() 
     const [fechaInicio, setFechaInicio] = useState(null)
     const [fechaFin, setFechaFin] = useState(null)
-    const {roomId} = useParams()
-    let fechasReservadas = []
+    const {roomId} = useParams()    
     const setDatosReserva = useReservaStore((state)=>state.setDatosReserva)
     const diasTotal = differenceInCalendarDays(fechaFin, fechaInicio)
     // ------------------datos para cargar en la pagina -------------------
@@ -62,18 +60,19 @@ export default function Rooms(){
          
     const ObtenerDataReserva = async () => {
         const {data, error} = await datosReserva(roomId)
-        if(error) console.error('Error al obtener datos de reserva :', error.message)
+        if(error) console.error('Error al obtener datos de reserva :', error.message)        
         setDataReserva(data)
     }
 
     const diasReserva = () =>{
-        if(dataReserva){
+        
+        if(dataReserva){            
             dataReserva.forEach((reserva)=>{
-            const inicio = parseISO(reserva.fecha_entrada)
-            const fin = parseISO(reserva.fecha_salida)
-            const dias = eachDayOfInterval({start: inicio, end:fin})
-            fechasReservadas.push(...dias)
-        })
+                const inicio = parseISO(reserva.fecha_entrada)
+                const fin = parseISO(reserva.fecha_salida)
+                const dias = eachDayOfInterval({start: inicio, end:fin})                
+                setFechasReservadas((prev)=> [...prev, dias])
+            })    
         }
     }
     
@@ -83,9 +82,12 @@ export default function Rooms(){
         bebes:0,
         mascotas:0,
         huespedes:1,
-    })   
-
-    const handleDataReserva = (textoBoton)=>{
+    })
+     
+    const handleDataReserva = (e)=>{
+        const textoBoton = e.target.textContent
+        const id= e.target.id
+        console.log('id:', id)
         if(textoBoton === "Reserva" ){    
             if(!user)return alert('inicia sesion')        
             route.push(`/rooms/${roomId}/reserva`)    
@@ -104,127 +106,245 @@ export default function Rooms(){
                 fechaFin: format(fechaFin, "yyy/MM/dd"),
                 diasTotal,                
             }) 
-        }else{
-            ObtenerDataReserva()
-            setOpen(true)
+        }else{ 
+            id ==="celular" ? setOpen(true): setOpenPc(true)          
         }
     } 
+    const abrirmenu = ()=>{
+       
+    }
+    const direccion = `${dataset?.direccion}, ${dataset?.ciudad}, ${dataset?.departamento}`
+    
+
     useEffect(()=>{
-        obtenerData()        
+        obtenerData() 
+        ObtenerDataReserva()       
     },[])   
     useEffect(()=>{
         diasReserva()
     },[dataReserva])
     
     return(     
-       <div className="container w-[60%] md:w-[90%] m-auto " >
+       <div className="container-rooms container relative flex flex-col md:w-[90%] md:m-auto  " >
             {dataset &&(
-                <div>
-                {/* -------------------------------------fotos------------------------------- */}
-                <section  className="flex flex-col items-start gap-7 ">
-                    {/* ----------------titulo + iconos------------------------- */}
-                    <section className="flex justify-between items-center w-full">
-                        <div className="">
-                            <h1 className="text-h1">{dataset.titulo}</h1>
-                        </div>
-                        <div className="flex  gap-5">
-                            <div className="flex gap-1">
-                                <Share />
-                                Compartir
-                            </div>
-                            <div className="flex gap-1">
-                                <Heart />
-                                Guardar
-                            </div>
-                        </div>
-                    </section>
-                    {/* -------------------fotos-------------------------------------------- */}
-                    <section className="grid grid-cols-4 grid-rows-2 gap-2  h-[40vh] w-full">
-                        <div className="col-span-2 row-span-2 ">
+                <div className="flex flex-col   gap-4 ">
+                 {/* ------------------foto  celular----------------------- */}
+                    
+                        <section  className="grid grid-cols-4 grid-rows-2 gap-2  h-[40vh] w-full  ">
+                         <div className=" col-span-4 row-span-2 md:col-span-2 md:row-span-2  ">
                             <Image 
                                 src={dataset.fotos?.[0]}
                                 alt="mio"
                                 width={700}
                                 height={200}
-                                className="w-full h-full object-cover rounded-2xl"
+                                onClick={abrirmenu}
+                                className="w-full h-full object-cover md:rounded-2xl"
                             />
                         </div>
                         {
                             dataset.fotos
                             .filter((f,i)=>i !== 0 && i <= 4)
                             .map((foto,i)=>(
-                                <div key={i} className="relative w-full h-full overflow-hidden">
+                                <div key={i}  className="relative w-full h-full overflow-hidden">
                                     <Image 
                                         src={foto}
                                         alt="foto"
                                         fill
-                                        className=" object-cover rounded-2xl"
+                                        priority
+                                        onClick={abrirmenu}
+                                        className=" object-cover md:rounded-2xl"
                                     />
                                 </div>
+                                
                             ))
                         }
-                    </section>
-                </section>
-                {/* ------------------------------------------descripcion y reserva-------------------------- */}
-                <section>
-                    <div className="flex py-6 ">                        
-                        {/* ---------------descripcion----------------- */}
-                        <article className="w-[65%]  h-[100vh]">
-                           <section>                                
-                                <h2 className="text-lg">{`Habitacion privada en ${dataset.alojamiento} con servicios incluidos en ${dataset.ciudad}, ${dataset.pais}`}</h2>
-                                <p>{`${dataset.huespedes} huéspedes • ${dataset.habitaciones} Habitación(es) • ${dataset.camas} cama(s) • ${dataset.baños} baño(s)`} </p>
-                           </section>
-                        </article>
 
-                        {/* -------------------------------------reserva------------------------------------ */}
-                        <article className=" flex flex-col w-[40%]  border-blue-400 p-5">
-                            <div className=" flex flex-col gap-4 shadow-2xl  rounded-xl p-4 sticky top-30">
-                                <div className="w-full h-30 ">
-                                    <p className="text-[45px]">{`$${dataset.precio} COP`}</p>
-                                    <p>{`por ${dataset} noches`}</p>                                
+                            
+                            {/* -------------iconos de favorito y compartir----------- */}
+                            <div className="absolute top-2 w-full flex justify-between px-3">
+                                <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2">
+                                    <Search size={15}/>
                                 </div>
-                                <div className="border border-gray-400 rounded-xl">
-                                    <div>                                    
-                                        <CalendarioRango 
-                                            open={open}
-                                            fechasReservadas={fechasReservadas}
-                                            setOpen={setOpen}
-                                            fechaInicio={fechaInicio}
-                                            fechaFin={fechaFin}
-                                            setFechaInicio={setFechaInicio}
-                                            setFechaFin={setFechaFin}
-                                        />
-                                    </div>                               
-                                    <div>                                                                        
-                                        <DropdownHuespedes huespedesPermitidos={dataset.huespedes} setDataHuespedes={setDataHuespedes}/>          
-                                    </div>  
+                                <div className="flex justify-center gap-3">
+                                    <div className="bg-gray-200/30 backdrop-blur-2xl rounded-full p-2">
+                                        <Share size={15}/>
+                                    </div>
+                                    <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2">
+                                        <Heart size={15}/>
+                                    </div>
                                 </div> 
-                                <div>
-                                    {/* <Link href={`/rooms/${roomId}/reserva`}> */}
-                                        <button 
-                                            type="button" 
-                                            className="bg-red-500 px-5 py-4 w-full rounded-full cursor-pointer text-white text-[20px]"  
-                                            onClick={(e)=>handleDataReserva(e.target.textContent)}                                          
+                            </div>
+                        </section>
+                        {/* -------------------------fin session de foto celular-------- */}
+                    <div className="flex flex-col  rounded-t-3xl bg-white -mt-8 md:flex-row md:rounded-none  md:m-0">
+                        <div className=" w-full md:w-[60%]">
+                            {/* ------------------------------session informacion-------------------- */}
+                            <article className="px-4 flex flex-col gap-5">
+                                <section className="flex flex-col gap-5  ">
+                                {/* -------------------------titulo y descripcion--------------------- */}
+                                    <div>
+                                        <h1>{dataset.titulo}, {dataset.ciudad}</h1>
+                                    </div>  
+
+                                    <div className="text-center text-gray-500">
+                                        <p>{dataset.tipo_alojamiento} en {dataset.ciudad}, {dataset.pais}</p>
+                                        <p>{`${dataset.huespedes} ${dataset.huespedes > 1 ? "huespédes" : "huésped"} • ${dataset.habitaciones} ${dataset.habitaciones>1 ? "habitaciones" : "habitación"} • ${dataset.camas} ${dataset.camas > 1 ? "camas" : "cama"} • ${dataset.baños} ${dataset.baños > 1 ? "baños" : "baño"}`}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <p>{dataset.descripcion}</p>
+                                    </div>
+                                </section>
+                                {/* -------------------------------------session de servicios---------------------------- */}
+                                <hr />
+                                <section className="flex flex-col gap-4"> 
+                                    <h2 className=" font-bold">Lo que este lugar ofrece</h2>                                    
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                        {
+                                            dataset.servicios.map((servicio, i) => {
+                                            const opcion = opciones.find((op) => op.id === servicio)                                
+                                            const Icono = opcion.icono
+                                            return(
+                                                <div key={i} className="flex gap-3 items-center p-3 h-full min-h-18 border border-gray-100 shadow-xs/30 rounded-2xl">                                    
+                                                    <Icono />
+                                                    {opcion.nombre}
+                                                </div>
+                                            )
+                                            })
+                                        }
+                                    </div>                                    
+                                
+                                </section>
+                                <hr />
+                                {/* -------------------------------session mapa---------------------------------- */}
+                                <section className="h-auto">
+                                    <h2 className="font-bold">A donde irás</h2>
+                                    <p>{dataset.ciudad}, {dataset.departamento}, {dataset.pais}</p>
+                                    {/* --------------------------mapa---------------------------- */}
+                                    <div className="rounded-xl p-4 shadow-2xl/10 ">
+                                        <Mapa direccion={direccion}/>
+                                    </div>
+                                </section>
+                                <hr />
+                                {/* ----------------------session calendario------------------- */}
+                                <section className="flex flex-col " >
+                                    <p>x noches</p>                    
+                                    <div className=" flex justify-center items-center h-100 w-full   md:hidden">
+                                        <CalendarioFechas                               
+                                            escala={125}
+                                            fechasReservadas={fechasReservadas}
+                                            startDate={fechaInicio}
+                                            endDate={fechaFin}
+                                            setStartDate={setFechaInicio}
+                                            setEndDate={setFechaFin}
+                                        />
+                                    </div>
+                                    <div className="  hidden md:flex md:justify-center items-center h-150 w-full    ">
+                                        <CalendarioDoble 
+                                            startDate={fechaInicio}
+                                            endDate={fechaFin}
+                                            setStartDate={setFechaInicio}
+                                            setEndDate={setFechaFin}
+                                            fechasReservadas={fechasReservadas}
+                                        />
+                                    </div>
+                                </section>
+                            </article>
+                        </div>
+                        {/* ----------------------------datos de reserva------------------------ */}                 
+                        
+                        {/* --------------------------------------reserva celular----------------------------------------- */}
+                        <div className="sticky bottom-0 z-1000 bg-white w-full flex justify-between items-centercenter md:flex-col md:w-[40%]  ">
+                            
+                            {/* -----------------------boton y huespedes--------------------------- */}
+                            <div className=" flex  items-center gap-2 md:sticky md:flex-col md:items-start md:shadow-2xl md-border md:border-gray-100 md:rounded-xl md:top-30 px-4 py-2 border">
+                                {/* --------------------------precio------------------------- */}
+                                <div className="flex justify-center items-start w-[50%] h-20 md:flex-col">
+                                    <p className="md:text-[25px] text-gray-700 ">
+                                        {fechaInicio && fechaFin
+                                            ? (`$ ${dataset.precio * diasTotal} COP ` ) 
+                                            :("Agrega las fechas para ver los precios") } 
+                                    </p>
+                                    <p className="text-gray-700 ">
+                        {fechaInicio && fechaFin && (`Por ${diasTotal>1 ? (`${diasTotal} noches`) : (`${diasTotal} noche`) } ` )} 
+                    </p>
+                                    
+                                </div>
+                                {/* ----------------------------------boton---------------------------- */}
+                                <div className=" flex-col md:w-full   h-20 md:h-40 w-[50%]">
+                                    <div className=" flex flex-col gap-4 h-full  rounded-xl  md:sticky top-30"> 
+                                        <div className=" border border-gray-400 rounded-xl hidden md:block">
+                                            <div>                                    
+                                                <DropdownCalendarioPc />
+                                            </div>                               
+                                            <div>                                                                        
+                                                <DropdownHuespedes huespedesPermitidos={dataset.huespedes} setDataHuespedes={setDataHuespedes}/>          
+                                            </div>  
+                                        </div> 
+
+                                        {/* ------------------------------boton pc-------------------------- */}
+                                        <button
+                                            type="button"
+                                            id="pc"
+                                            onClick={(e)=>handleDataReserva(e)}
+                                            className="px-4 py-2 hidden bg-green-500 md:block text-white font-bold rounded-full h-full"
                                         >
                                             {
-                                                diasTotal > 0 ? "Reserva"
-                                                              : "Comprobar disponibilidad"
+                                                diasTotal>0 ?"Reserva" : "Comprobar disponibilidad"
                                             }
                                         </button>
-                                    {/* </Link> */}
+                                        
+                                        {/* --------------------------boton celu-----------------------  */}
+                                        <button
+                                            type="button"
+                                            id="celular"
+                                            onClick={(e)=>handleDataReserva(e)}
+                                            className="px-4 py-2 md:hidden bg-red-500 text-white font-bold rounded-full h-full"
+                                        >
+                                            {
+                                                diasTotal>0 ?"Reserva" : "Comprobar disponibilidad"
+                                            }
+                                        </button> 
+                                    </div>
                                 </div>
+                                {/* -------------------------------fin boton------------------------------ */}
                             </div>
-                        </article>
+                        </div>
                     </div>
-                </section>
-                {/* ---------------------------------------calificaciones y comentarios---------------------- */}
-                <section>
-                    <div className="h-[200vh] border border-amber-950"></div>
-                </section>
+                        
                 </div>
-                
-                
             )}
+            
+            {/* --------------------------------------------modal para seleccionar fechas y huespedes en celular---------------------- */}
+            <Calendario open={open} setOpen={setOpen} >
+                <div className="flex flex-col overflow-y-auto">
+                    <div>
+                        <CalendarioFechas                               
+                            escala={100}
+                            fechasReservadas={fechasReservadas.flat()}
+                            startDate={fechaInicio}
+                            endDate={fechaFin}
+                            setStartDate={setFechaInicio}
+                            setEndDate={setFechaFin}                                                        
+                        />
+                    </div>
+                    <div>
+                        <DropdownHuespedesCelu huespedesPermitidos={dataset?.huespedes} setDataHuespedes={setDataHuespedes}/>
+                    </div>
+                </div>
+                {/* -----------------------------------boton + precio----------------------- */}
+                <div className="flex flex-col justify-center items-start w-[50%] h-20 md:flex-col">
+                    <p className="md:text-[25px] text-gray-700 ">
+                        {fechaInicio && fechaFin
+                            ? (`$ ${dataset.precio * diasTotal} COP ` ) 
+                            :("Agrega las fechas para ver los precios") } 
+                    </p>
+                    <p className="text-gray-700 ">
+                        {fechaInicio && fechaFin && (`Por ${diasTotal>1 ? (`${diasTotal} noches`) : (`${diasTotal} noche`) } ` )} 
+                    </p>
+                    
+                </div>
+            </Calendario>
        </div>
           
     )

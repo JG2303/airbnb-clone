@@ -1,4 +1,3 @@
-import Image from "next/image";
 export const metadata = {
     title: "Servicios | Airbnb",
     descripcion: "pagina de servicios ofrecidos "

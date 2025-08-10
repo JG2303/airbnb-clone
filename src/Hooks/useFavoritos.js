@@ -21,6 +21,7 @@ export default function useFavoritos(){
             const {data, error} = await supabase  
                 .from('alojamiento')
                 .select('*')
+                .limit(8)
             setIsLoading(false)
             if(error) setError(error)
             return{data, error}
@@ -58,6 +59,7 @@ export default function useFavoritos(){
             const {data, error} = await supabase 
                 .from('alojamiento')
                 .select('*')
+                
             setIsLoading(false)
             if(error) setError(error)
             return{data, error}
@@ -116,18 +118,83 @@ export default function useFavoritos(){
             return{data, error}
         }
 
-        //----------------------------------consultar por ciudadad------------------------------
-        const selectCiudad = async () => {
+        //----------------------------------consultar todas las ciudades ciudadad------------------------------
+        const selectCiudades = async () => {
             setIsLoading(true)
             setError(null)
             const {data, error} = await supabase
                 .from('alojamiento')
-                .select('ciudad')                
+                .select('ciudad')                                
             setIsLoading(false)
             if(error) setError(error)
             return{data, error}
         } 
-        
+        // ------------------------------------------consultar solo una ciudad-------------------------------
+        const selectCiudad = async (ciudad) =>{
+            setIsLoading(true)
+            setError(null)
+            const {data, error} = await supabase
+                .from('alojamiento')
+                .select('id')
+                .eq('ciudad', ciudad)
+            setIsLoading(false)
+            if(error) setError(error)
+            return{data, error}
+        }
+        // ------------------------------------------consultar solo una ciudad alojamiento completo-------------------------------
+        const selectAlojamientoCiudad = async (ciudad) =>{
+            setIsLoading(true)
+            setError(null)
+            const {data, error} = await supabase
+                .from('alojamiento')
+                .select('*')
+                .eq('ciudad', ciudad)
+            setIsLoading(false)
+            if(error) setError(error)
+            return{data, error}
+        }
+        // --------------------------------------filtrar por numero de huespedes---------------------------------
+        const selectHuespedes = async (cantidad) =>{
+            setIsLoading(true)
+            setError(null)
+            const {data, error} = await supabase
+                .from('alojamiento')
+                .select('id')
+                .gte('huespedes',cantidad)
+            setIsLoading(false)
+            if(error) setError(error)
+            return{data, error}
+        }
+
+        // ----------------------------------------filtrar ciudad y fecha ----------------------------
+        const selectFechaCiudad = async (ciudad, fechaInicio, fechaFin) => {
+            try {
+                setIsLoading(true)
+                setError(null)
+                // -------------------- Traer alojamientos de la ciudad
+                const { data: alojamientosCiudad, error: errorCiudad } = await selectCiudad(ciudad)
+                if (errorCiudad) throw errorCiudad                
+                const idsAlojamiento = alojamientosCiudad.map(a => a.id)
+
+                // -------------------- Buscar reservas en ese rango de fechas
+                const { data: reservasOcupadas, error: errorReservas } = await supabase
+                    .from('reservas')
+                    .select('id_alojamiento')
+                    .in('id_alojamiento', idsAlojamiento)
+                    .or(`and(fecha_entrada.lte.${fechaFin},fecha_salida.gte.${fechaInicio})`)
+                if (errorReservas) throw errorReservas                
+                // -------------------- Filtrar alojamientos disponibles (que no están reservados)
+                const idsOcupados = reservasOcupadas.map(r => r.id_alojamiento)                
+                const alojamientosDisponibles = alojamientosCiudad.filter(a => !idsOcupados.includes(a.id))                
+                setIsLoading(false)
+                return {data:alojamientosDisponibles, error}
+
+            } catch (err) {                
+                setError(err)
+                setIsLoading(false)
+            }
+        }
+
     return{
         agregarFavoritos,
         eliminarFavoritos,
@@ -137,7 +204,11 @@ export default function useFavoritos(){
         insertAlojamiento,
         alojamientoId,
         datosReserva,
+        selectCiudades,
         selectCiudad,
+        selectHuespedes,
+        selectFechaCiudad,
+        selectAlojamientoCiudad,
         error,
         isLoading
     }

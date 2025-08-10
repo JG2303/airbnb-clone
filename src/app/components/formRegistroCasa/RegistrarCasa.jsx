@@ -1,14 +1,14 @@
 "use client";
 import {useState } from 'react'
 import { useUser } from '@clerk/nextjs'
-import dynamic from 'next/dynamic';
 import useFavoritos from '@/hooks/useFavoritos';
-const TipoAlojamiento = dynamic(() => import('./elements/tipoAlojamiento'))
-const QueAlojamiento = dynamic(() => import('./elements/queAlojamiento'))
-const DireccionAlojamiento = dynamic(() => import('./elements/direccionAlojamiento'))
-const Cantidad = dynamic(() => import('./elements/cantidad'))
-const ServiciosHospedaje = dynamic(() => import('./elements/serviciosHospedaje'))
-const FotosHospedaje = dynamic(() => import('./elements/fotosHospedaje'))
+import TipoAlojamiento from './elements/tipoAlojamiento';
+import QueAlojamiento from './elements/queAlojamiento';
+import DireccionAlojamiento from './elements/direccionAlojamiento';
+import Cantidad from './elements/cantidad';
+import ServiciosHospedaje from './elements/serviciosHospedaje';
+import FotosHospedaje from './elements/fotosHospedaje';
+
 export default function RegistrarCasa() {
 	const {user} = useUser()
   	const [pasoActual, setPasoActual] = useState(0);

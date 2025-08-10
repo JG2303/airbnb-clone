@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
-export default function useFeching(URL){
+export default function useFetching(URL){
+    
     const [dataset, setDataset] = useState(null)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(true)    

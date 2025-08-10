@@ -1,4 +1,49 @@
 'use client'
+{/**
+
+  
+'use client'
+import { useState } from 'react'
+import AutoCompleteDireccion from './direccionApi'
+import Mapa from '../../mapas/mapa'
+
+
+export default function DireccionAlojamiento() {
+    const API_KEY = process.env.NEXT_PUBLIC_API_GEOAPIFY
+    const [datosDireccion, setDatosDireccion] = useState({
+        direccion: '',
+        ciudad: '',
+        departamento: '',
+        pais: ''
+    })
+
+    function manejarSeleccion(datos) {
+        setDatosDireccion(datos)
+    }
+
+    return (
+        <div className="p-6">
+        <h1 className="text-xl font-semibold mb-4">Dirección del usuario</h1>
+
+        <AutoCompleteDireccion onDireccionSeleccionada={manejarSeleccion} />
+
+        {datosDireccion.direccion && (
+            <div className="mt-4 text-sm bg-gray-50 p-4 rounded-md shadow-inner">
+                <p><strong>Dirección completa:</strong> {datosDireccion.direccion}</p>
+                <p><strong>Ciudad:</strong> {datosDireccion.ciudad}</p>
+                <p><strong>Departamento:</strong> {datosDireccion.departamento}</p>
+                <p><strong>País:</strong> {datosDireccion.pais}</p>
+                <div>
+                    <Mapa apiKey={API_KEY} direccion={datosDireccion.direccion}/>
+                </div>
+            </div>
+
+        )}
+        </div>
+    )
+}
+
+*/}
 export default function DireccionAlojamiento({ubicacion, setUbicacion}){   
     const handleChange = (e) =>{
         const {id, value} = e.target
