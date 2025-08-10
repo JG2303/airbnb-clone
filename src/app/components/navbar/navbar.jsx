@@ -33,8 +33,8 @@ export default function Navbar(){
     }, []);
     return(
         <div className={` flex flex-col h-full  w-full items-center justify-center `}>
-                <div className=" w-full order-2 md:order-first">
-                    <nav className={`  p-3 md:h-[50%] transition-all transform duration-200 ease-in-out md:order-first ${!mostrarIconos && "md:absolute md:scale-0 scale-75 "}`}>
+                <div className="w-full order-2 md:order-first">
+                    <nav className={`  p-2 md:h-[50%] transition-all transform duration-500 ease md:order-first ${!mostrarIconos && "md:absolute md:scale-0 scale-75 "}`}>
                         <ul className="flex justify-center  items-center gap-7 ">
                             {
                                 itemsAirbnb.map((item,i)=>(                                
@@ -45,7 +45,7 @@ export default function Navbar(){
                                             <div 
                                                 className={`
                                                         origin-top
-                                                        transition-all duration-200 ease-in-out
+                                                        transition-all duration-500 ease-in-out
                                                         transform
                                                         ${mostrarIconos ? "scale-100 opacity-100" : "scale-y-0 scale-75 opacity-0"}
                                                         ${!mostrarIconos && "absolute h-0  overflow-hidden "}
@@ -59,7 +59,7 @@ export default function Navbar(){
                                                                                                 
                                                 />
                                             </div>
-                                            <div className={`${mostrarIconos ? "scale-100 opacity-100" : "scale-y-0 scale-75 opacity-0"}`}>
+                                            <div className={`${mostrarIconos ? "scale-100 opacity-100" : "md:scale-y-0 md:scale-75 "}`}>
                                                 {item.titulo}
                                             </div>
                                         </Link>

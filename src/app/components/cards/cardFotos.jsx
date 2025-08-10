@@ -29,7 +29,7 @@ export default function CardFotos({ciudad}){
     const [favorito, setFavorito] = useState([]) 
     const [paginaFavorito, setPaginaFavorito] = useState(false)  
     const {user} = useUser()   
-    const {favoritosUsuario, agregarFavoritos, eliminarFavoritos, isLoadin, cargarDataset, selectAlojamientoCiudad} = useFavoritos()     
+    const {favoritosUsuario, agregarFavoritos, eliminarFavoritos, selectAlojamientoCiudad} = useFavoritos()     
     const [mostrarModal, setMostrarModal]=useState(false)     
     //  ---------------carga de datos iniciales---------------------
     const mostrarDatos = async () =>{ 
@@ -134,8 +134,7 @@ export default function CardFotos({ciudad}){
                             </div>
                         </div>
                         <div>
-                            <h2 className="text-[12px] md:text-[18px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>                          
-                            
+                            <h2 className="text-[12px] md:text-[18px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>
                             <p className="font-medium text-gray-500">${alojamiento.precio} COP por noche </p>
                         </div>
                     </div>

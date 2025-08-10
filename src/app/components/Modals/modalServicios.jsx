@@ -1,5 +1,4 @@
 import { X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 const ModalServicios = ({ onClose, itemsAirbnb, seleccionado, setSeleccionado, setMostrarModal }) => {
   return (
