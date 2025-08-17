@@ -1,6 +1,6 @@
 'use client'
 import DropdownHuespedes from "@/app/components/dropdown/DropHuespedes"
-import { Heart, Search, Share } from "lucide-react"
+import { ArrowLeft, Heart, Search, Share } from "lucide-react"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -87,7 +87,6 @@ export default function Rooms(){
     const handleDataReserva = (e)=>{
         const textoBoton = e.target.textContent
         const id= e.target.id
-        console.log('id:', id)
         if(textoBoton === "Reserva" ){    
             if(!user)return alert('inicia sesion')        
             route.push(`/rooms/${roomId}/reserva`)    
@@ -131,50 +130,55 @@ export default function Rooms(){
                  {/* ------------------foto  celular----------------------- */}
                     
                         <section  className="grid grid-cols-4 grid-rows-2 gap-2  h-[40vh] w-full  ">
-                         <div className=" col-span-4 row-span-2 md:col-span-2 md:row-span-2  ">
-                            <Image 
-                                src={dataset.fotos?.[0]}
-                                alt="mio"
-                                width={700}
-                                height={200}
-                                onClick={abrirmenu}
-                                className="w-full h-full object-cover md:rounded-2xl"
-                            />
-                        </div>
-                        {
-                            dataset.fotos
-                            .filter((f,i)=>i !== 0 && i <= 4)
-                            .map((foto,i)=>(
-                                <div key={i}  className="relative w-full h-full overflow-hidden">
-                                    <Image 
-                                        src={foto}
-                                        alt="foto"
-                                        fill
-                                        priority
-                                        onClick={abrirmenu}
-                                        className=" object-cover md:rounded-2xl"
-                                    />
-                                </div>
-                                
-                            ))
-                        }
-
-                            
+                            <div className=" col-span-4 row-span-2 md:col-span-2 md:row-span-2  ">
+                                <Image 
+                                    src={dataset.fotos?.[0]}
+                                    alt="mio"
+                                    width={700}
+                                    height={200}
+                                    onClick={abrirmenu}
+                                    className="w-full h-full object-cover md:rounded-2xl"
+                                />
+                            </div>
+                            {
+                                dataset.fotos
+                                .filter((f,i)=>i !== 0 && i <= 4)
+                                .map((foto,i)=>(
+                                    <div key={i}  className="relative w-full h-full overflow-hidden">
+                                        <Image 
+                                            src={foto}
+                                            alt="foto"
+                                            fill
+                                            priority
+                                            onClick={abrirmenu}
+                                            className=" object-cover md:rounded-2xl"
+                                        />
+                                    </div>
+                                    
+                                ))
+                            }
+                        </section>
                             {/* -------------iconos de favorito y compartir----------- */}
-                            <div className="absolute top-2 w-full flex justify-between px-3">
-                                <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2">
-                                    <Search size={15}/>
+                            <div className="absolute  top-2 w-full flex justify-between px-3 md:static md:justify-end md:order-first">
+                                <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2 md:hidden">
+                                    <ArrowLeft size={15}/>
                                 </div>
                                 <div className="flex justify-center gap-3">
-                                    <div className="bg-gray-200/30 backdrop-blur-2xl rounded-full p-2">
-                                        <Share size={15}/>
+                                    <div className=" md:flex md:justify-center md:items-center md:gap-2">
+                                        <span className="hidden  md:block">Compartir</span>
+                                        <div className="bg-gray-200/30 backdrop-blur-2xl rounded-full p-2 md:bg-none ">
+                                            <Share size={15} />
+                                        </div>
                                     </div>
-                                    <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2">
-                                        <Heart size={15}/>
+                                    <div className=" md:flex md:justify-center md:items-center md:gap-2">
+                                        <span className="hidden  md:block">Guardar</span>
+                                        <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2 md:bg-none">
+                                            <Heart size={15}/>
+                                        </div>
                                     </div>
+                                   
                                 </div> 
                             </div>
-                        </section>
                         {/* -------------------------fin session de foto celular-------- */}
                     <div className="flex flex-col  rounded-t-3xl bg-white -mt-8 md:flex-row md:rounded-none  md:m-0">
                         <div className=" w-full md:w-[60%]">
@@ -254,25 +258,25 @@ export default function Rooms(){
                         {/* ----------------------------datos de reserva------------------------ */}                 
                         
                         {/* --------------------------------------reserva celular----------------------------------------- */}
-                        <div className="sticky bottom-0 z-1000 bg-white w-full flex justify-between items-centercenter md:flex-col md:w-[40%]  ">
+                        <div className="sticky bottom-0 z-1000 bg-white md:bg-none md:z-1 w-full flex justify-between items-centercenter md:flex-col md:w-[40%]  ">
                             
                             {/* -----------------------boton y huespedes--------------------------- */}
-                            <div className=" flex  items-center gap-2 md:sticky md:flex-col md:items-start md:shadow-2xl md-border md:border-gray-100 md:rounded-xl md:top-30 px-4 py-2 border">
+                            <div className=" flex w-full md:h-80 border border-gray-100 items-center gap-2 md:sticky md:flex-col md:items-start md:shadow-2xl md:border md:border-gray-100 md:rounded-xl md:top-30 px-4 py-2 ">
                                 {/* --------------------------precio------------------------- */}
-                                <div className="flex justify-center items-start w-[50%] h-20 md:flex-col">
-                                    <p className="md:text-[25px] text-gray-700 ">
+                                <div className="flex flex-col justify-center items-start w-[50%]  md:flex-col">
+                                    <p className=" text-[16px] font-bold md:text-[20px] text-gray-700  ">
                                         {fechaInicio && fechaFin
                                             ? (`$ ${dataset.precio * diasTotal} COP ` ) 
                                             :("Agrega las fechas para ver los precios") } 
                                     </p>
-                                    <p className="text-gray-700 ">
-                        {fechaInicio && fechaFin && (`Por ${diasTotal>1 ? (`${diasTotal} noches`) : (`${diasTotal} noche`) } ` )} 
-                    </p>
+                                    <p className="text-gray-400 ">
+                                        {fechaInicio && fechaFin && (`Por ${diasTotal>1 ? (`${diasTotal} noches`) : (`${diasTotal} noche`) } ` )} 
+                                    </p>
                                     
                                 </div>
                                 {/* ----------------------------------boton---------------------------- */}
-                                <div className=" flex-col md:w-full   h-20 md:h-40 w-[50%]">
-                                    <div className=" flex flex-col gap-4 h-full  rounded-xl  md:sticky top-30"> 
+                                <div className=" flex-col md:w-full  md:h-40 w-[50%]  ">
+                                    <div className=" flex flex-col  gap-4 rounded-xl  md:sticky top-30 "> 
                                         <div className=" border border-gray-400 rounded-xl hidden md:block">
                                             <div>                                    
                                                 <DropdownCalendarioPc />
@@ -287,7 +291,7 @@ export default function Rooms(){
                                             type="button"
                                             id="pc"
                                             onClick={(e)=>handleDataReserva(e)}
-                                            className="px-4 py-2 hidden bg-green-500 md:block text-white font-bold rounded-full h-full"
+                                            className=" hidden md:h-full bg-red-500 p-5 md:block  md:border text-white font-bold rounded-full cursor-pointer"
                                         >
                                             {
                                                 diasTotal>0 ?"Reserva" : "Comprobar disponibilidad"
@@ -333,7 +337,7 @@ export default function Rooms(){
                     </div>
                 </div>
                 {/* -----------------------------------boton + precio----------------------- */}
-                <div className="flex flex-col justify-center items-start w-[50%] h-20 md:flex-col">
+                <div className="flex flex-col justify-center  items-start w-[50%] h-20 md:flex-col ">
                     <p className="md:text-[25px] text-gray-700 ">
                         {fechaInicio && fechaFin
                             ? (`$ ${dataset.precio * diasTotal} COP ` ) 

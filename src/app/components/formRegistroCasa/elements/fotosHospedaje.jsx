@@ -30,18 +30,18 @@ export default function FotosHospedaje({rutas, setRutas}){
        }
     }    
     return(
-        <fieldset className="border p-5 flex flex-col justify-center items-center gap-3">
+        <div className="flex flex-col items-center  ">
            <legend> Agrega algunas fotos de tu casa -lo que se selecciono como alojamiento- </legend>            
-           <div className="flex flex-col  items-center  justify-end bg-gray-100 rounded-3xl border border-dashed shadow-xl w-[70%] min-h-[350px]">
+           <div className="flex flex-col  items-center  justify-end bg-gray-100 rounded-3xl border border-dashed shadow-xl  md:w-[70%]  md:min-h-[350px]">
                 <PreviewImagenes preview={preview} setPreview={setPreview} />
            </div>
            <div >
                 <button 
                     type="button"
-                    className="bg-green-300 rounded-xl px-5 py-3 hover:bg-green-600 transition-all ml-150"
+                    className="bg-green-300 rounded-xl px-5 py-3 hover:bg-green-600 transition-all "
                     onClick={handleUpload}
                 >Guardar</button>
             </div>
-        </fieldset>
+        </div>
     )
 }

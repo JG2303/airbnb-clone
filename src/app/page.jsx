@@ -11,17 +11,17 @@ export default function Home(){
     const scrollRefSession3 = useRef(null)
     const scrollRefSession4 = useRef(null)
     const sessionesAlojamientos = [
-        {nombre:"valledupar", scrollRef: scrollRefSession1},
-        {nombre:"cali", scrollRef: scrollRefSession2},
-        {nombre:"Girardot", scrollRef: scrollRefSession3},
-        {nombre:"cartagena", scrollRef: scrollRefSession4},
+        {nombre:"cartagena", scrollRef: scrollRefSession1},
+        {nombre:"valledupar", scrollRef: scrollRefSession2},
+        {nombre:"Santa marta", scrollRef: scrollRefSession3},
+        {nombre:"Guatape", scrollRef: scrollRefSession4},
     ]
     return (  
-        <div className=" pl-7 pt-3  flex flex-col gap-7">     
+        <div className=" pl-7 pt-3  flex flex-col gap-2 pb-20">     
             {/* ---------------------sesiones----------------------        */}
             {
                 sessionesAlojamientos.map((session, id)=>(
-                    <div key={(id)} className="flex flex-col gap-3 "> 
+                    <div key={(id)} className="flex flex-col "> 
                         <div className="flex justify-between items-center "> 
                             {/* -------------------------iconos de flechas-------------------- */}
                             <div 
@@ -37,7 +37,7 @@ export default function Home(){
                             
                         </div>
                         <div className=" overflow-x-auto scroll-oculto overflow-y-hidden" ref={session.scrollRef}>
-                            <div className="grid grid-cols-8  w-[1350px] md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 xl:w-[1850px] gap-4   ">
+                            <div className="grid grid-cols-8  w-[1350px]  xl:w-[2100px] gap-3  ">
                                 <CardFotos ciudad={session.nombre}/>
                             </div>
                         </div>

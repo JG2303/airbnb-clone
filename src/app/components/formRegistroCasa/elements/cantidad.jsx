@@ -15,10 +15,11 @@ export default function Cantidad({children,infoAlojamiento, setInfoAlojamiento})
         }
     }
     return(
-        <fieldset className="border p-5">
+        <fieldset className="p-4 flex flex-col">
+            
             <legend>Agrega algunos datos básicos sobre tu espacio</legend>
             {/* -------------------------------huespedes------------------------- */}
-            <div>
+            <div className="flex flex-col items-center">
                 <p>Huéspedes</p>
                 <div className="flex gap-2">
                     <button
@@ -37,7 +38,7 @@ export default function Cantidad({children,infoAlojamiento, setInfoAlojamiento})
                 </div>
             </div>
                {/* -----------------habitaciones--------------------------------- */}
-            <div>
+            <div className="flex flex-col items-center">
                 <p>Habitaciones</p>
                 <div className="flex gap-2">
                     <button
@@ -56,7 +57,7 @@ export default function Cantidad({children,infoAlojamiento, setInfoAlojamiento})
                 </div>
             </div>
                 {/* --------------------------camas--------------------------- */}
-            <div>
+            <div className="flex flex-col items-center">
                 <p>Camas</p>
                 <div className="flex gap-2">
                     <button
@@ -75,7 +76,7 @@ export default function Cantidad({children,infoAlojamiento, setInfoAlojamiento})
                 </div>
             </div>
                 {/* ---------------------------------baños----------------------------- */}
-            <div>
+            <div className="flex flex-col items-center">
                 <p>Baños</p>
                 <div className="flex gap-2">
                     <button

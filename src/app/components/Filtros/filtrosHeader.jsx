@@ -1,45 +1,80 @@
 'use client'
 import { Search } from "lucide-react"
-import dynamic from "next/dynamic"
 import { useState } from "react"
-import useFavoritos from "@/hooks/useFavoritos"
 import DropdownHuespedes from "../dropdown/DropHuespedes"
 import DropdownFiltros from "../dropdown/dropdownFiltro"
+import { useStoreSearch } from "@/app/stores/storeSearch"
+import { supabase } from "@/lib/supabaseClient"
+import { useRouter } from "next/navigation"
 
-export default function FiltrosHeader(){  
-    const {selectCiudad, selectHuespedes , selectFechaCiudad} = useFavoritos()
-    const [dataHuespedes, setDataHuespedes] = useState()
-    
+export default function FiltrosHeader(){      
+    const [dataHuespedes, setDataHuespedes] = useState(1)    
+    const setSearchData = useStoreSearch((state)=>state.setSearchData)
+    const searchData = useStoreSearch((state)=>state.searchData)
+    const router = useRouter()
     const [filtro, setFiltro] = useState({
         lugar: '',
         fechaIn: null,
         fechaOut: null,
-        cantidad: 0
+        cantidad: 1
     })  
-    // --------------------------------------aplicar los filtros----------------------------
-    const handleCantidad = async ()=>{        
-        const {data, error} = await selectHuespedes(filtro.cantidad)
-        if(error) console.error('error al filtrar por cantidad', error.message)
-        
-    }
-
-    const handleFiltroCiudad = async ()=>{
-        // ------------------------filtro por ciudad------------------------
-        const {data, error} = await selectCiudad(filtro.lugar)
-        if(error) console.error('Error al buscar la ciudad', error.message)       
-    }
+    
     // ----------------aplicar los filtros al darle al boton buscar------------------------
-    const handleFiltros = (e)=>{
-        handleFiltroCiudad(filtro.lugar)
-        handleCantidad()
-    }
-    // -----------------------------buscar los alojamiento de X ciudad que esten disponible en x fecha---
-    const handlefechasCiudad = async () => {
-        const {data, error} = await selectFechaCiudad(filtro.lugar, filtro.fechaIn, filtro.fechaOut)
-        if(error) console.error('error', error.message)
+    const handleFiltros = async (e) => {
+        e.preventDefault()       
         
-    }    
-    return(       
+        try {
+            let query = supabase
+                .from("alojamiento")
+                .select("*")
+
+            // Filtro ciudad
+            if (filtro.lugar) {
+            query = query.eq("ciudad", filtro.lugar)
+            }
+
+            // Filtro huéspedes
+            if (filtro.cantidad > 0) {                
+                query = query.gte("huespedes", filtro.cantidad)
+            }
+
+            // Ejecutar consulta base
+            const { data: alojamientos, error } = await query
+            if (error) throw error
+
+            let disponibles = alojamientos
+
+            // Filtrar por fechas usando reservas
+            if (filtro.fechaIn && filtro.fechaOut) {
+            const { data: reservas, error: errorReservas } = await supabase
+                .from("reservas")
+                .select("id_alojamiento, fecha_entrada, fecha_salida")
+
+            if (errorReservas) throw errorReservas
+
+            // Excluir alojamientos que tengan choque de fechas
+            const ocupados = reservas
+                .filter(r =>
+                r.fecha_entrada <= filtro.fechaOut &&
+                r.fecha_salida >= filtro.fechaIn
+                )
+                .map(r => r.alojamiento_id)
+
+            disponibles = alojamientos.filter(a => !ocupados.includes(a.id))
+            }
+
+            setSearchData(disponibles)
+            router.push('/resultadosFiltro')
+        } catch (error) {
+            console.error("Error en la búsqueda:", error.message)
+        }
+    }
+   
+    console.log('datos en el global:', searchData)
+    
+    return( 
+        <>  
+
             <div className=" grid grid-cols-3 gap-1">
                 <div className="">                    
                     <DropdownFiltros filtro={filtro} setFiltro={setFiltro} />
@@ -56,9 +91,16 @@ export default function FiltrosHeader(){
                     </div>
                 </div>
                 {/* -------------------------seleccionar cantidad de huespedes------------- */}
-                <div className=" flex justify-between   hover:bg-gray-200 w-full "> 
+                <div className=" flex justify-between rounded-full  hover:bg-gray-200 w-full "> 
                     <div className="w-full">
-                        <DropdownHuespedes  setDataHuespedes={setDataHuespedes} lugar="filtros" />                    
+                        <DropdownHuespedes 
+                            setDataHuespedes={(data) => {
+                                setDataHuespedes(data)  // guardas el objeto completo (adultos, niños)
+                                const total = (data.adultos || 0) + (data.niños || 0)
+                                setFiltro({ ...filtro, cantidad: total })
+                            }}
+                            lugar="filtros" 
+                        />                 
                     </div>                                      
                     <div className="px-3 rounded-full py-1 flex justify-center items-center">
                         <button 
@@ -69,17 +111,10 @@ export default function FiltrosHeader(){
                         </button> 
                     </div>
                     {/* --------------------boton de buscar(aplicar filtros) */}
-                </div>
-                {/* <button 
-                    type="button hidden"
-                    className="bg-amber-600 p-5 cursor-pointer rounded-full"
-                    onClick={handlefechasCiudad}
-                > fechas </button>             */}
+                </div>                      
                 
             </div>
             
-            
-     
-
+        </>      
     )
 }

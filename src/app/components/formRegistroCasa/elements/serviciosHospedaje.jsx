@@ -29,7 +29,7 @@ export default function ServiciosHospedaje({servicios, setServicios}){
         )
     }        
     return(
-        <fieldset className="grid grid-cols-3  border gap-4 p-8">
+        <fieldset className="grid grid-cols-2 md:grid-cols-3 gap-4 p-8">
             <legend className="col-span-4 text-lg  mb-4">Cuéntale a los huéspedes todo lo que tu espacio tiene para ofrecer</legend>
             {
                 opciones.map((servicio)=>{
@@ -48,7 +48,7 @@ export default function ServiciosHospedaje({servicios, setServicios}){
                                         }`}
                         >
                             <div> <IconoServicio size={30} /></div>
-                            <div className='font-medium text-[18px]'> {servicio.nombre}</div>
+                            <div className='font-medium text-[14px] md:text-[18px]'> {servicio.nombre}</div>
                         </button>
                     )
                 })

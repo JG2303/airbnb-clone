@@ -19,12 +19,23 @@
 'use client'
 import  {Search, Heart ,Home, MessageSquare,User} from "lucide-react"
 import Link from "next/link"
-import { SignedIn, UserButton } from "@clerk/nextjs"
+import { SignedIn, UserButton, useUser } from "@clerk/nextjs"
 import DropdownMenu from "../dropdown/dropdown"
-import {  useState } from "react"
+import {  useEffect, useState } from "react"
 import ModalServicios from "../modals/modalServicios"
+import useFavoritos from "@/hooks/useFavoritos"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useAnuncioStore } from "@/app/stores/storeAnfitrion"
+// import {setAnuncioStore} from '@stores/storeAnfitrion'
 export function Header({children}) { 
-    
+    const {user} = useUser()
+    const {esAnfitrion} = useFavoritos()
+    const [modoAnfitrion, setModoAnfitrion] = useState(false)
+    const [dataAnfitrion, setDataAnfitrion] = useState(null)
+    const searchParams = useSearchParams()
+    const router = useRouter()
+    const pathname = usePathname()
+    const setAnuncio = useAnuncioStore((state)=>state.setAnuncio);
     const itemsAirbnb = [
         {
             titulo: "Alojamientos",
@@ -42,7 +53,14 @@ export function Header({children}) {
             link:"/servicios"
         }
     ] 
-
+    const anfitrion = async() =>{
+        const {data, error} = await esAnfitrion(user?.id)
+        if(error) console.error('error al consultar publicaciones de usuario')
+        setDataAnfitrion(data)
+        if(data.length > 0) setModoAnfitrion(true)
+        setAnuncio(data)
+                
+    }
     const [mostrarModal, setMostrarModal] = useState(false)
     const [seleccionado, setSeleccionado] = useState(null)
     const menuCelular = [
@@ -52,9 +70,26 @@ export function Header({children}) {
         {nombre:"Mensajes", icono:MessageSquare, link:"/"},
         {nombre:"Perfil", icono:User, link:"/perfil"},
     ] 
-    const handleModal = ()=>{
-        setMostrarModal(true)
+    // ---------controlo el modo del boton ------------------
+    const handleModal = (e)=>{
+        const modo = e.target.textContent        
+        if (pathname === "/anfitrion") {
+            router.push("/") 
+        } else if (modo==="Modo anfitrión") {            
+            router.push(`/anfitrion`)
+        } else {
+            setMostrarModal(true)
+        }        
     }  
+    useEffect(()=>{
+        if (searchParams.get('modoAnfitrion') === 'true') {
+            setModoAnfitrion(true)
+            // -------------Limpiar el parámetro de la URL------------
+            router.replace(window.location.pathname)
+        } else {
+            anfitrion()
+        }
+    },[user,searchParams])
     return(                             
         <div className="flex justify-between   ">
             {/* ----------------------------------------logo-------------------------------------- */}
@@ -92,9 +127,14 @@ export function Header({children}) {
                 <div className="">
                     <button 
                         className=" cursor-pointer hover:bg-stone-100 rounded-4xl p-2 text-[13px]  "
-                        onClick={handleModal}
+                        onClick={(e)=>handleModal(e)}
                     >
-                        Conviértete en anfitrion
+                        {
+                            pathname === "/anfitrion"
+                                ? "Cambiar a modo viajero"
+                                : (user?.id && modoAnfitrion ? "Modo anfitrión" : "Conviértete en anfitrión")
+                        }
+                        
                     </button>
                 </div>
                 {

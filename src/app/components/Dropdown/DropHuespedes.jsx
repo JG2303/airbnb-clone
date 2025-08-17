@@ -83,13 +83,14 @@ export default function DropdownHuespedes({huespedesPermitidos=15,setDataHuesped
                 </div>
                 <div>                
                     <CantidadBoton 
-                    disableQuitar={disableQuitar}                  
-                    disableAgregar={disableAgregar}
-                    tope={tope}
-                    maximo={maximo} 
-                    setMaximo={setMaximo}
-                    cantidad={boton.estado} 
-                    setCantidad={boton.setEstado}  />
+                        disableQuitar={disableQuitar}                  
+                        disableAgregar={disableAgregar}
+                        tope={tope}
+                        maximo={maximo} 
+                        setMaximo={setMaximo}
+                        cantidad={boton.estado} 
+                        setCantidad={boton.setEstado}  
+                    />
                 </div>
                 
                 </div>

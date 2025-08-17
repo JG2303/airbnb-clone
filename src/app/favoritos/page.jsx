@@ -7,9 +7,9 @@ export default function Favoritos(){
         <div>
             {
                 user&&(
-                   <div className="flex flex-col gap-6">
+                   <div className="flex flex-col gap-6 pb-20">
                         <h1 className="text-center ">Mis favoritos</h1>
-                        <div className="grid grid-cols-1 gap-3 px-2 sm:[grid-template-columns:repeat(auto-fit,minmax(450px,450px))]   ">
+                        <div className="grid grid-cols-1 gap-3 px-2 sm:grid-cols-4">
                             <CardFotos ciudad={"favoritos"} />
                         </div>
                    </div>

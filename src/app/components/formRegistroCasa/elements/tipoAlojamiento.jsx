@@ -33,7 +33,7 @@ export default function TipoAlojamiento({tipo, setTipo}){
         { id: "casa-flotante", nombre: "Casa flotante", icono: Waves}
     ];      
     return(
-        <fieldset className="grid grid-cols-3 gap-4 p-10 border">
+        <fieldset className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 ">
             <legend className="col-span-4 text-lg  mb-4">¿Cuál de estas opciones describe mejor tu espacio?</legend>
             { 
                 opciones.map((opcion)=>{

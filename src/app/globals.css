@@ -63,12 +63,9 @@ footer{
 .scroll-oculto::-webkit-scrollbar {
   display: none;                 /* Chrome, Safari, Edge */
 }
-/* ---------------------------calendario datapicker------------------------ */
-.color{
-  border: 1px solid red
+hr{
+  border-color: var(--neutral-02);
 }
-
-/* -----------------fin calendario------------------------------------------- */
 
 @layer base {
   h1 {

@@ -90,7 +90,6 @@ export default function useFavoritos(){
             }
         } 
         // -------------------------------cargar datos de alojamiento especifico--------------
-
         const alojamientoId = async (id) =>{
             setIsLoading(true)
             setError(null)
@@ -103,7 +102,18 @@ export default function useFavoritos(){
             if(error) setError(error)
             return{data, error}
         } 
-        //-----------------------------------obtener datos de reserva--------------------------
+        // -------------------------------ver si el usuario tiene alojamientos(modo anfitrion)----
+        const esAnfitrion = async(id) =>{
+            setIsLoading(true)
+            setError(null)
+            const {data, error} = await supabase
+                .from('alojamiento')
+                .select('*')
+                .eq('id_user', id)
+            setIsLoading(false)
+            return {data, error}
+        }
+        //--------------------------------obtener datos de reserva--------------------------
 
         const datosReserva = async(id) => {
             setIsLoading(true)
@@ -118,7 +128,7 @@ export default function useFavoritos(){
             return{data, error}
         }
 
-        //----------------------------------consultar todas las ciudades ciudadad------------------------------
+        //----------------------------------consultar todas las ciudades ------------------------------
         const selectCiudades = async () => {
             setIsLoading(true)
             setError(null)
@@ -129,7 +139,7 @@ export default function useFavoritos(){
             if(error) setError(error)
             return{data, error}
         } 
-        // ------------------------------------------consultar solo una ciudad-------------------------------
+        // -----------------------------------consultar solo una ciudad-------------------------------
         const selectCiudad = async (ciudad) =>{
             setIsLoading(true)
             setError(null)
@@ -141,7 +151,7 @@ export default function useFavoritos(){
             if(error) setError(error)
             return{data, error}
         }
-        // ------------------------------------------consultar solo una ciudad alojamiento completo-------------------------------
+        // -----------------------------------consultar solo una ciudad alojamiento completo------------
         const selectAlojamientoCiudad = async (ciudad) =>{
             setIsLoading(true)
             setError(null)
@@ -153,7 +163,7 @@ export default function useFavoritos(){
             if(error) setError(error)
             return{data, error}
         }
-        // --------------------------------------filtrar por numero de huespedes---------------------------------
+        // ------------------------------------filtrar por numero de huespedes---------------------------------
         const selectHuespedes = async (cantidad) =>{
             setIsLoading(true)
             setError(null)
@@ -165,6 +175,29 @@ export default function useFavoritos(){
             if(error) setError(error)
             return{data, error}
         }
+        // -------------------------------eliminar anuncio del usuario------------------------
+         const deleteAlojamiento = async (id) =>{
+            setIsLoading(true)
+            setError(null)
+            const {error} = await supabase
+                .from('alojamiento')
+                .delete()
+                .eq('id',id)
+            setIsLoading(false)
+            if(error) setError(error)
+            return{error}
+         }  
+        //  ------------------------------actualizar alojamiento/anuncio----------------------
+        const updateAlojamiento = async (id, datos) =>{
+            setIsLoading(true)
+            setError(null)
+            const {error} = await supabase
+                .from('alojamiento')
+                .update(datos)
+                .eq('id', id)
+            if(error) setError(error)
+            setIsLoading(false)
+        } 
 
         // ----------------------------------------filtrar ciudad y fecha ----------------------------
         const selectFechaCiudad = async (ciudad, fechaInicio, fechaFin) => {
@@ -188,6 +221,8 @@ export default function useFavoritos(){
                 const alojamientosDisponibles = alojamientosCiudad.filter(a => !idsOcupados.includes(a.id))                
                 setIsLoading(false)
                 return {data:alojamientosDisponibles, error}
+        
+
 
             } catch (err) {                
                 setError(err)
@@ -209,6 +244,9 @@ export default function useFavoritos(){
         selectHuespedes,
         selectFechaCiudad,
         selectAlojamientoCiudad,
+        esAnfitrion,
+        deleteAlojamiento,
+        updateAlojamiento,
         error,
         isLoading
     }

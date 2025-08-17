@@ -19,17 +19,17 @@ export default function PreviewImagenes({preview, setPreview}){
         setPreview(borrado)
     }    
     return(
-        <div className="flex flex-col items-center gap-3 object-contain">
-            <div className="grid grid-cols-2 gap-4 p-6 ">
+        <div className="flex flex-col items-center gap-3 object-contain p-5">
+            <div className="grid grid-cols-2 w-full md:grid-cols-2 gap-4 md:p-6 ">
                 {
                     preview.map((prev, i)=>(
                         <div key={i}  className="relative">
                             <Image                         
                                 src={prev.url} 
                                 alt={prev.name}
-                                width={300}
-                                height={300}
-                                className="h-[300] w-[300] rounded-2xl shadow-2xs"
+                                width={100}
+                                height={100}
+                                className="h-full w-full md:w-[300] rounded-2xl shadow-2xs"
                             >
                             </Image>    
                             <button
@@ -44,15 +44,15 @@ export default function PreviewImagenes({preview, setPreview}){
             <input 
                 type="file" 
                 multiple
-                id="imegen"
+                id="imagen"
                 accept="image/*"
                 onChange={handleImageChange}
                 className="hidden"
              />
             <label 
-                htmlFor="imegen"
+                htmlFor="imagen"
                 className="bg-blue-200 py-4 px-6 rounded-2xl cursor-pointer hover:bg-blue-400 transition-all"
-            >Agregar</label>
+            >Cargar fotos</label>
             
         </div>
     )

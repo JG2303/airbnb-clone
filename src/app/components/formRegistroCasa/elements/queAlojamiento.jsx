@@ -19,8 +19,8 @@ export default function QueAlojamiento({tipoAlojamiento, setTipoAlojamiento}){
     ]
     
     return(
-        <fieldset className="border p-4 flex flex-col gap-2">
-            <legend>¿De qué tipo de alojamiento dispondrán los huéspedes?</legend>
+        <fieldset className="p-4 flex flex-col gap-2">
+            <legend >¿De qué tipo de alojamiento dispondrán los huéspedes?</legend>
             {
                 opciones.map((tipo)=>(
                             <div key={tipo.id} className="  flex gap-3 items-start w-full  cursor-pointer transition" >

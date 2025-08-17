@@ -14,22 +14,31 @@
  */
 'use client'
 import { SignUp, useUser } from "@clerk/nextjs"
-import { Heart } from "lucide-react"
+import { Heart, HouseIcon, Trash2Icon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import Modal from "../modals/modal"
 import useFavoritos from "@/hooks/useFavoritos"
 import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css' // Importa los estilos CSS
+import 'react-loading-skeleton/dist/skeleton.css' 
+import ModalBase from "../modals/modalBase"
+import { useRouter } from "next/navigation"
+import { useStoreSearch } from "@/app/stores/storeSearch"
 export default function CardFotos({ciudad}){ 
+    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [dataAlojamiento, setDataAlojamiento] = useState([])  
     const [error, setError] = useState(null)
     const [favorito, setFavorito] = useState([]) 
-    const [paginaFavorito, setPaginaFavorito] = useState(false)  
+    const [paginaFavorito, setPaginaFavorito] = useState(false) 
     const {user} = useUser()   
-    const {favoritosUsuario, agregarFavoritos, eliminarFavoritos, selectAlojamientoCiudad} = useFavoritos()     
+    const [clickAnuncio, setClickAnuncio] = useState(false)
+    const [idAnuncio, setIdAnuncio] = useState(null)
+    const [anuncios, setAnuncios] = useState(false)
+    const [eliminar, setEliminar] = useState(false)
+    const searchData = useStoreSearch((state)=>state.searchData)
+    const {favoritosUsuario, agregarFavoritos, eliminarFavoritos, selectAlojamientoCiudad, esAnfitrion, deleteAlojamiento} = useFavoritos()     
     const [mostrarModal, setMostrarModal]=useState(false)     
     //  ---------------carga de datos iniciales---------------------
     const mostrarDatos = async () =>{ 
@@ -41,7 +50,14 @@ export default function CardFotos({ciudad}){
             setDataAlojamiento(lista)   
             setPaginaFavorito(true)         
             if(error) console.log('error con favoritos:', error)
-        }else{            
+        }else if(ciudad==="anuncios"){ 
+            const {data, error} = await esAnfitrion(user?.id)
+            if(error) console.error('error al abtener anuncios del anfitrion')
+            setAnuncios(true)
+            setDataAlojamiento(data)            
+        }else if(ciudad === "filtros"){
+            setDataAlojamiento(searchData)
+        }else{          
             // --------------------------pagina home-------------------
             const {data, error} = await selectAlojamientoCiudad(ciudad)
             if(error) console.error('Error al cargar datos: ', error.message)
@@ -59,7 +75,7 @@ export default function CardFotos({ciudad}){
         }
         setIsLoading(false)
     } 
-    // --------------------------fin carga datos iniciale----------------------     
+    // --------------------------fin carga datos iniciales----------------------     
     const uploadDataFavoritos = async (id) =>{
         if(!user){            
             setMostrarModal(true)
@@ -83,6 +99,28 @@ export default function CardFotos({ciudad}){
         if (!texto) return ''
         return texto.charAt(0).toUpperCase() + texto.slice(1)
     }
+    // -----------------------------configuracion del anuncio-----------------
+    const handleAnuncio = (id) => {
+        setClickAnuncio(true)
+        setIdAnuncio(id)
+    }
+    // -------------------------------eliminar anuncio-------------------------
+    
+    const handleEliminarAnuncio = async () =>{              
+        const {error} = await deleteAlojamiento(idAnuncio)        
+        if(error){
+            console.error('Error al eliminar anuncio ', error.message)
+            return
+        }         
+        setClickAnuncio(false)  
+        setEliminar(false)
+        setIdAnuncio(null)
+        mostrarDatos()
+    }
+    // -------------------------------eliminar anuncio-------------------------
+    const handleEditarAnuncio = () =>{
+       router.push(`/anfitrion/editar/${idAnuncio}`)
+    }
     //-------------------cargar datos al montar pagina---------------
     useEffect(() => {
         mostrarDatos()  
@@ -90,36 +128,58 @@ export default function CardFotos({ciudad}){
             setMostrarModal(false);            
         }
     }, [user]);
-
+    
     if (error) return <p>Error al cargar las fotos: {error.message}</p>;    
     return (        
         <>
-            { isLoading ? (
+            { isLoading  ? (
                 <>                
                     <Skeleton width={300} height={250} style={{ marginBottom: '10px' }} />
                     <Skeleton count={3} width="100%" height={20} style={{ marginBottom: '5px' }} />
                     <Skeleton width={150} height={25} style={{ marginTop: '20px' }} />
                 </>
-            )
-             :(
-                dataAlojamiento?.map((alojamiento)=>(                    
-                    <div  key={alojamiento.id}  >                        
-                        <div className="relative md:w-[250px] md:h-[200px] ">
-                            <Link href={`/rooms/${alojamiento.id}`}>
-                                <div className={`w-full h-[150px] gap-2  ${paginaFavorito ? "w-full h-[300px]  md:h-[400px]": "md:w-full md:h-[300px]" }`}>
+            ):(
+                dataAlojamiento?.map((alojamiento)=>( 
+                    anuncios 
+                    ?
+                       <div key={alojamiento?.id} role="button" onClick={()=>handleAnuncio(alojamiento.id)} className=" flex flex-col flex-wrap w-full h-full md:w-full md:h-full ">
+                            <div  className={` w-full h-[150px] md:w-full  md:h-[200px] `}>
+                                <Image 
+                                    src={alojamiento.fotos?.[1] || '/images/net.png'}
+                                    alt={alojamiento.id}  
+                                    width={300}
+                                    height={300}                                      
+                                    priority                                     
+                                    className="rounded-[20px] object-cover w-full h-full"                                
+                                />
+                            </div>
+                            <div >
+                                <h2 className="text-[12px] md:text-[15px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>
+                                
+                            </div>
+                       </div>
+                    :
+                    <div  key={alojamiento.id} className="flex flex-col md:flex-wrap w-full h-full md:w-full md:h-full ">                        
+                        <div className={`relative`}>
+                            <Link href={`/rooms/${alojamiento.id}`} >
+                                <div className={` ${paginaFavorito 
+                                                    ? "w-full h-[300px] "
+                                                    : "w-full h-[180px] " 
+                                                }`}
+                                >
                                     <Image 
-                                        src={alojamiento.fotos?.[1]}
-                                        alt={alojamiento.id}                                        
-                                        priority 
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"                                 
-                                        className="rounded-3xl object-cover"                                
-                                        fill  
+                                        src={alojamiento.fotos?.[1] || '/images/net.png'}
+                                        alt={alojamiento.id} 
+                                        width={300}
+                                        height={300}                                       
+                                        priority                                         
+                                        className={`rounded-[20px] object-cover w-full h-full }`}                                
                                     />
                                 </div>
                             </Link>
                             <div 
                                 role="button" 
-                                className="absolute top-3 right-3"
+                                className="absolute top-2 right-1 md:right-3"
                                 onClick={()=>uploadDataFavoritos(alojamiento.id)}
                              >
                                 {/* --------------------------------favorito icono------------------- */}
@@ -133,9 +193,9 @@ export default function CardFotos({ciudad}){
                                 />
                             </div>
                         </div>
-                        <div>
-                            <h2 className="text-[12px] md:text-[18px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>
-                            <p className="font-medium text-gray-500">${alojamiento.precio} COP por noche </p>
+                        <div >
+                            <h2 className="text-[12px] md:text-[15px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>
+                            <p className=" text-[12px] md:text-[15px] text-gray-500">${alojamiento.precio} COP por noche </p>
                         </div>
                     </div>
                 )))                
@@ -147,6 +207,67 @@ export default function CardFotos({ciudad}){
                             routing="hash"                                                    
                         />
                     </Modal>
+                )
+            }
+            {
+                user && clickAnuncio &&(
+                    <ModalBase 
+                        isOpen={clickAnuncio} 
+                        onClose={()=> {
+                            setClickAnuncio(false); 
+                            setEliminar(false);
+                            setIdAnuncio(null);
+                        }}
+                        >
+                        
+                        {
+                            eliminar ?(
+                                <div className="flex flex-col gap-3">
+                                    <h2 className="text-center font-bold ">¿Quieres eliminar este anuncio?</h2>
+                                    <p>Esto es permanente: ya no podrás encontrar ni editar este anuncio.</p>
+                                    <div className="flex flex-col gap-3">
+                                        <button 
+                                            type="button"
+                                            onClick={handleEliminarAnuncio}
+                                            className="bg-gray-900/80 w-full py-4 rounded-xl text-white font-bold hover:bg-gray-900">
+                                            Sí, lo quiero eliminar
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            onClick={()=>setEliminar(false)}
+                                            className="flex w-full justify-center gap-4 rounded-xl py-4 hover:bg-gray-200">
+                                            <Trash2Icon />
+                                            Cancelar
+                                        </button>
+
+                                    </div>
+                                </div>
+                            )
+                            :
+                            (<div className="flex flex-col gap-3 p-4">
+                                <div className="m-auto">
+                                    <HouseIcon size={100} />
+                                </div>
+                                <button 
+                                    type="button"
+                                    onClick={()=>{
+                                        handleEditarAnuncio() 
+                                        setClickAnuncio(false)
+                                    }}
+                                    className="bg-gray-900/80 w-full py-4 rounded-xl text-white font-bold hover:bg-gray-900">
+                                    Edita el anuncio
+                                </button>
+                                <button 
+                                    type="button"
+                                    onClick={()=> setEliminar(true)}
+                                    className="flex w-full justify-center gap-4 rounded-xl py-4 hover:bg-gray-200">
+                                    <Trash2Icon />
+                                    Elimina el anuncio
+                                </button>
+                            </div> )
+                        }
+                    </ModalBase>
+                    
                 )
             }
         </>

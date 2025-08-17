@@ -8,6 +8,8 @@ import DireccionAlojamiento from './elements/direccionAlojamiento';
 import Cantidad from './elements/cantidad';
 import ServiciosHospedaje from './elements/serviciosHospedaje';
 import FotosHospedaje from './elements/fotosHospedaje';
+import { useRouter } from 'next/navigation';
+
 
 export default function RegistrarCasa() {
 	const {user} = useUser()
@@ -34,9 +36,9 @@ export default function RegistrarCasa() {
     const [titulo, setTitulo] = useState('')
     const [descripcion, setDescripcion] = useState('')
     const [precio, setPrecio] = useState('')  
-
+	const router = useRouter()
   	const siguientePaso = () => setPasoActual((prev) => prev + 1);
- 	 const pasoAnterior = () => setPasoActual((prev) => prev - 1);
+ 	const pasoAnterior = () => setPasoActual((prev) => prev - 1);
 
   	const pasos = [
 		<TipoAlojamiento
@@ -66,6 +68,7 @@ export default function RegistrarCasa() {
 		<fieldset>
 			<legend>Título</legend>
 			<textarea
+				className='w-full h-40 p-5'
 				value={titulo}
 				onChange={(e)=>(setTitulo(e.target.value))}
 			/>
@@ -73,6 +76,7 @@ export default function RegistrarCasa() {
 		<fieldset>
 			<legend>Descripción</legend>
 			<textarea
+				className='w-full h-40 p-5'
 				value={descripcion}
 				onChange={(e) =>setDescripcion(e.target.value)}
 			/>
@@ -108,10 +112,14 @@ export default function RegistrarCasa() {
     }  
 	const uploadData = async ()=>{
 		await insertAlojamiento(ubicacion.direccion, dataFormulario)
-		if(error) console.log(error) 
+		if(error) {
+			console.log(error)		
+			return
+		}
+		router.push('/?modoAnfitrion=true')
 	}  
   return (
-    <div className="w-[50%] mx-auto">
+    <div className="w-full md:w-[50%] mx-auto pb-20">
 		<form>			 
 			{pasos[pasoActual]}			
 

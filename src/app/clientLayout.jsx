@@ -7,7 +7,7 @@ export default function ClientLayout({children}){
     const pathName = usePathname()
     const rutasNav = [
         "/",
-        "/rooms/[roomId]"
+        
     ]
     const mostrarNav = rutasNav.includes(pathName)
     return(

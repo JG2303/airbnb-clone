@@ -53,10 +53,10 @@ export default function DireccionAlojamiento({ubicacion, setUbicacion}){
         })
     } 
     return(
-        <fieldset className="direccion flex flex-col  gap-5 border p-5">
+        <fieldset className="direccion w-full flex flex-col  gap-5 p-4">
             <legend>Confirma tu dirección</legend>
-            <div >
-                <label htmlFor="pais">País</label>
+            <div className="flex flex-col gap-3">
+                <label htmlFor="pais">País: </label>
                 <select 
                     name="pais" 
                     id="pais"
@@ -78,8 +78,9 @@ export default function DireccionAlojamiento({ubicacion, setUbicacion}){
                 <label htmlFor="direccion">Dirección</label>
                 <input 
                     id="direccion" 
-                    className="w-[60%]" 
+                    className="w-full " 
                     type="text" 
+                    required
                     value={ubicacion.direccion}
                     onChange={handleChange}
                     placeholder="Aca va la direccion de api direccion " 
@@ -89,7 +90,7 @@ export default function DireccionAlojamiento({ubicacion, setUbicacion}){
                 <label htmlFor="apartamento">Apartamento, piso, edificio</label>
                 <input 
                     id="apartamento" 
-                    className="w-[60%]" 
+                    className="w-full " 
                     type="text" 
                     value={ubicacion.apartamento}
                     onChange={handleChange}
@@ -99,7 +100,8 @@ export default function DireccionAlojamiento({ubicacion, setUbicacion}){
                 <label htmlFor="ciudad">Ciudad </label>
                 <input 
                     id="ciudad" 
-                    className="w-[60%]" 
+                    required
+                    className="w-full " 
                     type="text"
                     value={ubicacion.ciudad}
                     onChange={handleChange} 
@@ -109,7 +111,7 @@ export default function DireccionAlojamiento({ubicacion, setUbicacion}){
                 <label htmlFor="departamento">departamento</label>
                 <input 
                     id="departamento" 
-                    className="w-[60%]" 
+                    className="w-full " 
                     type="text" 
                     value={ubicacion.departamento}
                     onChange={handleChange}
@@ -119,8 +121,9 @@ export default function DireccionAlojamiento({ubicacion, setUbicacion}){
                 <label htmlFor="postal">Codigo postal</label>
                 <input 
                     id="postal" 
-                    className="w-[60%]" 
-                    type="text" 
+                    required
+                    className="w-full " 
+                    type="text"
                     value={ubicacion.postal}
                     onChange={handleChange}
                     placeholder="Se toma de la api direccion " />

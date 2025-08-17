@@ -13,46 +13,45 @@ L.Icon.Default.mergeOptions({
 })
 
 export default function Mapa({ direccion = 'colombia' }) { 
-  const API_KEY = process.env.NEXT_PUBLIC_API_GEOAPIFY
-  const [coordenadas, setCoordenadas] = useState(null)
+	const API_KEY = process.env.NEXT_PUBLIC_API_GEOAPIFY
+	const [coordenadas, setCoordenadas] = useState(null)
 
-  useEffect(() => {
-    async function buscarCoordenadas() {
-      const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(direccion)}&lang=es&apiKey=${API_KEY}`
-      const response = await fetch(url)
-      const data = await response.json()
-      if (data.features && data.features.length > 0) {
-        const { lat, lon } = data.features[0].properties
-        setCoordenadas([lat, lon])
-      }
-    }
+	useEffect(() => {
+		async function buscarCoordenadas() {
+			const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(direccion)}&lang=es&apiKey=${API_KEY}`
+			const response = await fetch(url)
+			const data = await response.json()
+			if (data.features && data.features.length > 0) {
+				const { lat, lon } = data.features[0].properties
+				setCoordenadas([lat, lon])
+			}
+		}
+		buscarCoordenadas()
+	}, [direccion])
 
-    buscarCoordenadas()
-  }, [direccion])
+	if (!coordenadas) return <p className="text-sm text-gray-500">Cargando mapa...</p>
 
-  if (!coordenadas) return <p className="text-sm text-gray-500">Cargando mapa...</p>
-
-  return (
-    <MapContainer 
-      center={coordenadas} 
-      zoom={15} 
-      scrollWheelZoom={false}
-      dragging={false}
-      zoomControl={false}
-      doubleClickZoom={false}
-      boxZoom={false}
-      keyboard={false}
-      touchZoom={false}
-      className="h-96 w-full rounded-md shadow-md">
-      <TileLayer
-        url={`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${API_KEY}`}
-        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
-      />
-      <Marker position={coordenadas}>
-        <Popup>
-          {direccion}
-        </Popup>
-      </Marker>
-    </MapContainer>
-  )
+	return (
+		<MapContainer 
+				center={coordenadas} 
+				zoom={15} 
+				scrollWheelZoom={false}
+				dragging={false}
+				zoomControl={false}
+				doubleClickZoom={false}
+				boxZoom={false}
+				keyboard={false}
+				touchZoom={false}
+				className="h-96 w-full rounded-md shadow-md ">
+			<TileLayer				
+				url={`https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}.png?apiKey=${API_KEY}`}
+				
+			/>
+			<Marker position={coordenadas}>
+				<Popup>
+					{direccion}
+				</Popup>
+			</Marker>
+		</MapContainer>
+	)
 }

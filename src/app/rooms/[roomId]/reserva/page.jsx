@@ -47,107 +47,85 @@ export default function Reserva(){
             }
     }
     return(
-        <div className="grid grid-cols-5 p-20 gap-10 w-[60%] mx-auto">
-            {/* ----------------------metodo de pago------------------- */}
-            <div className="col-span-3 shadow-md p-6">
-                <h1>Confirma y paga</h1>
-                <div className=" flex flex-col gap-5">
-                    <h2>1. Agrega un método de pago</h2>
-                    <div className="flex justify-between items-center">
-                        {/* ------------------icono---------------------- */}
-                        <div><CardSim /></div>
-                        {/* ---------------------icono---------------- */}
-                        <div>
-                            <p>Tarjeta de crédito o débito</p>
-                            <VenetianMaskIcon />
-                        </div>
-                        {/* ----------------icono---------------- */}
-                        <div>
-                            <BoxSelectIcon />
-                        </div>
-                    </div>
-            {/* -----------------formulario de pago------------------------ */}
-                    <div className="border">
-                        <div>
-                            <input className="w-full h-15 outline-0 border-b" type="text" placeholder="Número de tarjeta "/>
-                        </div>
-                        <div className="flex ">
-                            <div className="w-[50%]">
-                                <input className="w-full h-15 border-r outline-0" type="text" placeholder="Caducidad" />
-                            </div>
-                            <div className="w-[50%]">
-                                <input  className="w-full h-15 outline-0" type="text" placeholder="Código CVV" />
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <input className="border w-full h-15 outline-0" type="text" placeholder="País/región" />
-                    </div>
-                    <div>
-                        <input className="border w-full h-15 outline-0" type="text" placeholder="País/región" />
-                    </div>
-                    {/* ----------------------------------boton-------------------------- */}
-                    <div className="flex justify-end">
-                        <button
-                            onClick={uploadReserva} 
-                            className="bg-red-500 px-5 py-3 rounded-xl cursor-pointer hover:bg-red-700">Siguiente</button>
-                    </div>
-                </div>
-            </div>
-            {/* --------------------------------card de alojamiento---------------------- */}
-            <div className="col-span-2 w-full gap-3">
-                <div className="flex flex-col gap-3">
+        <>
+            <div className="container-reserva relative grid grid-col-1 gap-10 w-full p-4 ">
+                
+                {/* --------------------------------card de alojamiento---------------------- */}                           
+                <div className="flex flex-col gap-3 border border-gray-200 rounded-xl p-4 ">
                     {/* ----------------titulo e imagen--------------------- */}
-                    <div className="flex gap-3 w-full ">
-                        <div>
-                            <Image
-                                src={datosReserva.foto}
-                                alt={datosReserva.titulo}
-                                width={120}
-                                height={120}
-                            />
+                    <div className="flex gap-3 w-full h-30  py-4 ">
+                        <div className="w-[40%] flex justify-center items-center ">
+                            <div className="absolute w-[100px] h-[100px]">
+                                <Image
+                                    src={datosReserva.foto}
+                                    alt={datosReserva.titulo}
+                                    fill
+                                    className="object-cover rounded-xl"
+                                />
+                            </div>
                         </div>
-                        <div>
+                        <div className="w-[60%]">
                             <h2>{datosReserva.titulo}</h2>
                         </div>
                     </div>
-                    {/* -------------------informacion cancelacion---------- */}
-                    <div>
-                        <h3>Cancelación gratuita</h3>
-                        <p>Si cancelas la reservación antes de xxx fecha recibirás el reemblso total.</p>
-                    </div>
                     <hr />
                     {/* ---------------detalles viaje-------------- */}
-                    <div className="flex justify-between">
-                        <div>
-                            <h3>Detalles del viaje</h3>
-                            <p>{datosReserva.fechaInicio}</p>
-                            <p>{datosReserva.adultos} Adultos, {datosReserva.niños} {datosReserva.niños > 0 ? "niños" : ""} </p>
-                            <p>{datosReserva.diasTotal}</p>
+                    <div className=" ">
+                        <div className="flex justify-between items-center py-4">
+                            <div>
+                                <h3>Fechas</h3>
+                                <p>{datosReserva.fechaInicio}  </p>
                             </div>
-                        <div className="">
-                            <button type="button" className="bg-gray-300 shadow px-2 py-1">Cambiar</button>
+                            <div>
+                                <button className="bg-gray-200 px-4 py-2 cursor-pointer rounded-xl" >Cambiar</button>                                
+                            </div>
                         </div>
-                    </div>
-                    <hr />
-                    {/* ---------------------informacion del precio--------------- */}
-                    <div className="flex flex-col gap-3">
-                        <div>
-                            <h3>Información del precio</h3>
-                        </div>
-                        <div>
-                            <p>{datosReserva.diasTotal} noches {datosReserva.precio} COP </p>
-                            <p>TOTAL:  $ { datosReserva.diasTotal * datosReserva.precio} COP</p>
-                        </div>
-                        <div>
-                            <p>Descuento por reservación adelantada</p>
-                            <p>--precio descuento--</p>
-                        </div>
-                    </div>
-                    <hr />
+                        <hr />
 
+                        <div className="flex justify-between items-center py-4">
+                            <div>
+                                <h3>Huespédes</h3>
+                                <p>{datosReserva.adultos + datosReserva.niños} {(datosReserva.adultos + datosReserva.niños)>1 ? "Adultos" : "Adulto"}</p>
+                            </div>
+                            <div>
+                                <button className="bg-gray-200 px-4 py-2 cursor-pointer rounded-xl" >Cambiar</button>
+                            </div>
+                        </div>
+                        <hr />
+
+                        <div className="flex justify-between items-center py-4">
+                            <div>
+                                <h3>Precio total</h3>
+                                <p>${ datosReserva.diasTotal * datosReserva.precio} COP</p>
+                            </div>
+                            <div>
+                                <button className="bg-gray-200 px-4 py-2 cursor-pointer rounded-xl" >Detalles</button>
+                            </div>
+                        </div>
+                        <hr />
+                        {/* -------------------informacion cancelacion---------- */}
+                        <div>
+                            <h3>Cancelación gratuita</h3>
+                            <p>Si cancelas la reservación antes de xxx fecha recibirás el reemblso total.</p>
+                        </div>
+                    </div>
+                </div> 
+                <hr />           
+                {/* ----------------------------------------------session de pago--------------------*/}
+                <div className="flex flex-col p-4">
+                    <h2 className="text-[22px] font-bold">Agrega un metodo de pago</h2>
+                    <div className="py-4">
+                        tarjeta credito
+                    </div>
+                    <div className="py-4">
+                        google pay
+                    </div>
                 </div>
-            </div>                        
-        </div>
+            </div>
+                {/* -------------------------------------boton sigueinete celular--------------------- */}
+                <div className="sticky flex justify-center items-center bottom-0 w-full bg-white z-1000 px-4 py-3 h-20 md:hidden">
+                    <button className=" w-full h-full text-gray-300 text-[18px] bg-gray-950 rounded-xl">Siguiente</button>
+                </div>
+        </>
     )
 }

@@ -9,30 +9,30 @@ import TipoAlojamiento from './elements/tipoAlojamiento'
 import styles from './registrarCasa.module.css'
 import { useUser } from '@clerk/nextjs'
 import { supabase } from '@/lib/supabaseClient'
-export default function RegistrarCasa(){
+export default function RegistrarCasaE({data}){
     const {user, isLoaded}= useUser() 
     // if(!user) return(<div>Acceso denegado</div>)
-    const [tipo, setTipo] = useState("")
-    const [tipoAlojamiento, setTipoAlojamiento]= useState('')    
+    const [tipo, setTipo] = useState(data.alojamiento || "")
+    const [tipoAlojamiento, setTipoAlojamiento]= useState(data.tipo_alojamiento ||'')    
     const [ubicacion, setUbicacion] = useState({
-        pais:"",
-        direccion:"",
-        apartamento:"",
-        ciudad:"",
-        departamento:"",
-        postal:""
+        pais:data.pais || "",
+        direccion:data.direccion ||"",
+        apartamento:data.apartemento || "",
+        ciudad:data.ciudad || "",
+        departamento:data.departamento || "",
+        postal:data.codigo_postal || ""
     })
     const [infoAlojamiento, setInfoAlojamiento]=useState({
-        huespedes:1,
-        habitaciones:1,
-        camas:2,
-        baños: 3
+        huespedes:data.huespedes || 1,
+        habitaciones:data.habitaciones || 1,
+        camas:data.camas || 2,
+        baños:data.baños ||  3
     })    
-    const [servicios, setServicios] = useState([])
+    const [servicios, setServicios] = useState(data.servicios || [])
     const [rutas, setRutas] = useState(null)
-    const [titulo, setTitulo] = useState('')
-    const [descripcion, setDescripcion] = useState('')
-    const [precio, setPrecio] = useState('')
+    const [titulo, setTitulo] = useState(data.titulo || '')
+    const [descripcion, setDescripcion] = useState(data.descripcion || '')
+    const [precio, setPrecio] = useState(data.precio || '')
     if(!isLoaded) return <div>Cargando...</div>
     if(!user) return <div>No puedes ver esta pagina si no esta logueado</div>   
     const dataFormulario = {
@@ -54,7 +54,7 @@ export default function RegistrarCasa(){
         descripcion : descripcion,
         precio: precio
     }    
-    const uploadData = async ()=>{
+    const updateData = async ()=>{
         const {data:existente} = await supabase
             .from('alojamiento')
             .select('*')
@@ -74,14 +74,15 @@ export default function RegistrarCasa(){
             )
         }
     }
+    console.log('servicios',servicios)
     return(
-        <form className={`${styles.formulario} w-[50%]`} action=""  >           
+        <form className={`${styles.formulario} w-full md:w-[50%] pb-20`}  >           
             <TipoAlojamiento tipo={tipo} setTipo={setTipo} />
             <QueAlojamiento tipoAlojamiento={tipoAlojamiento} setTipoAlojamiento={setTipoAlojamiento}/>
-            <fieldset className='border p-5'>
+            <fieldset className='p-4'>
                 <legend>¿Dónde se encuentra tu espacio?</legend>
                 <div >
-                    <input className='w-[80%] mx-auto' id='ubicacion-api' type="text" placeholder='Ingresa tu dirección' />
+                    <input className='w-full md:w-[80%] mx-auto' id='ubicacion-api' type="text" placeholder='Ingresa tu dirección' />
                 </div>
             </fieldset>
             <DireccionAlojamiento ubicacion={ubicacion} setUbicacion={setUbicacion}/>
@@ -92,7 +93,7 @@ export default function RegistrarCasa(){
                 <legend>Ahora, ponle un título a tu --casa ecológica--</legend>
                 <div>                    
                     <textarea 
-                        className='border w-full text-3xl rounded-xl' 
+                        className='border w-full text-3xl rounded-xl p-4' 
                         name="titulo" 
                         id="titulo" 
                         maxLength={32} 
@@ -108,7 +109,7 @@ export default function RegistrarCasa(){
                 <legend>Escribe tu descripción</legend>                
                 <div>
                     <textarea 
-                        className='border w-full text-3xl rounded-xl' 
+                        className='border w-full text-3xl rounded-xl p-4' 
                         name="descripcion" 
                         id="descripcion" 
                         maxLength={500} 
@@ -131,9 +132,9 @@ export default function RegistrarCasa(){
             </fieldset>   
             <button
                 type='button'
-                onClick={uploadData}
+                onClick={updateData}
                 className='bg-cyan-700 px-5 py-3 rounded-2xl'
-            >Registrar</button>         
+            >Actualizar</button>         
         </form>
     )
 }

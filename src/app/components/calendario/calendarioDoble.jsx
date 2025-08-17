@@ -34,14 +34,14 @@ export default function CalendarioDoble({
     const handleChange = (dates) => {
         const [start, end] = dates;
 
-        // 🚫 Evitar seleccionar mismo día como inicio y fin
+        //  Evitar seleccionar mismo día como inicio y fin
         if (start && end && isSameDay(start, end)) {
             setStartDate(null);
             setEndDate(null);
             return;
         }
 
-        // 🚫 Evitar seleccionar como inicio un día que está justo antes de una fecha reservada
+        // Evitar seleccionar como inicio un día que está justo antes de una fecha reservada
         if (start && !end) {
             const diaSiguiente = addDays(start, 1);
             const siguienteReservada = fechasPlanas.some((f) => isSameDay(f, diaSiguiente));
@@ -76,7 +76,7 @@ export default function CalendarioDoble({
             selectsRange
             excludeDates={fechasPlanas}
             selectsDisabledDaysInRange
-            calendarClassName="scale-125 airbnb-calendar"
+            calendarClassName="scale-125"
             dayClassName={dayClassName}
             renderCustomHeader={({
                 monthDate,

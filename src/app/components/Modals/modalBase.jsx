@@ -1,50 +1,52 @@
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { useState } from 'react'
-import CardFotos from '../cards/cardFotos'
+'use client'
+import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
+import { Fragment } from 'react'
+import { X } from 'lucide-react'
 
-export default function ModalBase() {
-  let [isOpen, setIsOpen] = useState(false)
-
-  function open() {
-    setIsOpen(true)
-  }
-
-  function close() {
-    setIsOpen(false)
-  }
-
+export default function ModalBase({ isOpen, onClose, children }) {
   return (
-    <>
-      <Button
-        onClick={open}
-        className="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-black/30"
-      >
-        Open dialog
-      </Button>
+    <Transition show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
+        
+        {/* Fondo oscuro */}
+        <TransitionChild
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black/50" />
+        </TransitionChild>
 
-      <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close} __demoMode>
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
-            >
-              <DialogTitle as="h3" className="text-base/7 font-medium text-white">
-                Payment successful
-              </DialogTitle>
-                {/* ------------------contenido a mostrar dentro del modal------------------- */}
-              <div className="mt-4">
-                <Button
-                  className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                  onClick={close}
-                >
-                  Got it, thanks!
-                </Button>
-              </div>
+        {/* Contenedor modal */}
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <DialogPanel className="bg-white rounded-2xl shadow-lg w-full max-w-md p-5 relative">
+              {/* Botón cerrar */}
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 p-1 hover:bg-gray-100 rounded-full"
+              >
+                <X size={20} />
+              </button>
+
+              {/* Contenido dinámico */}
+              {children}
             </DialogPanel>
-          </div>
+          </TransitionChild>
         </div>
       </Dialog>
-    </>
+    </Transition>
   )
 }
