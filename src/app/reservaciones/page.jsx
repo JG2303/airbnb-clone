@@ -1,10 +1,7 @@
 'use client'
-import useFavoritos from "@/hooks/useFavoritos"
-import { useUser } from "@clerk/nextjs"
+
 import CardFotos from "../components/cards/cardFotos"
 export default  function ReservacionesUser(){
-    const {user} = useUser()    
-    
     
     return(
         <div>
