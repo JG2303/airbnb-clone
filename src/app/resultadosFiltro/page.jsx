@@ -8,7 +8,7 @@ export default function ResultadosFiltro(){
     return(
        <>
             {
-                searchData.length > 0  
+                !searchData || searchData.length > 0  
                 ?
                 (
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-5 pb-20">

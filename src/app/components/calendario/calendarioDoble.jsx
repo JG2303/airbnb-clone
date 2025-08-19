@@ -1,67 +1,60 @@
-"use client";
-import { useMemo } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { isAfter, addDays, isSameDay } from "date-fns";
-import "@/app/estilos/calendario.css";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+"use client"
+import { useMemo } from "react"
+import DatePicker from "react-datepicker"
+import { isAfter, addDays, isSameDay } from "date-fns"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import "react-datepicker/dist/react-datepicker.css"
+import "@/app/estilos/calendario.css"
 
-export default function CalendarioDoble({
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    fechasReservadas,
-}) {
-    const monthsShown = useMemo(() => 2, []);
-
+export default function CalendarioDoble({startDate, setStartDate, endDate, setEndDate, fechasReservadas}) {
+    const monthsShown = useMemo(() => 2, [])
     const fechasPlanas = useMemo(() => {
-        return fechasReservadas.flat().map((f) => new Date(f));
-    }, [fechasReservadas]);
+        return fechasReservadas.flat().map((f) => new Date(f))
+    }, [fechasReservadas])
 
     const maxSelectableDate = useMemo(() => {
-        if (!startDate || endDate) return null;
+        if (!startDate || endDate) return null
 
         const proximas = fechasPlanas
             .filter((f) => isAfter(f, startDate))
-            .sort((a, b) => a - b);
+            .sort((a, b) => a - b)
 
-        if (proximas.length === 0) return null;
+        if (proximas.length === 0) return null
 
-        return addDays(proximas[0], -1);
-    }, [startDate, endDate, fechasPlanas]);
+        return addDays(proximas[0], -1)
+    }, [startDate, endDate, fechasPlanas])
 
     const handleChange = (dates) => {
-        const [start, end] = dates;
+        const [start, end] = dates
 
         //  Evitar seleccionar mismo día como inicio y fin
         if (start && end && isSameDay(start, end)) {
-            setStartDate(null);
-            setEndDate(null);
+            setStartDate(null)
+            setEndDate(null)
             return;
         }
 
         // Evitar seleccionar como inicio un día que está justo antes de una fecha reservada
         if (start && !end) {
-            const diaSiguiente = addDays(start, 1);
-            const siguienteReservada = fechasPlanas.some((f) => isSameDay(f, diaSiguiente));
+            const diaSiguiente = addDays(start, 1)
+            const siguienteReservada = fechasPlanas.some((f) => isSameDay(f, diaSiguiente))
             if (siguienteReservada) {
-                alert("No puedes iniciar una reserva un día antes de una fecha ocupada.");
-                setStartDate(null);
-                setEndDate(null);
+                alert("No puedes iniciar una reserva un día antes de una fecha ocupada.")
+                setStartDate(null)
+                setEndDate(null)
                 return;
             }
         }
 
-        setStartDate(start);
-        setEndDate(end);
+        setStartDate(start)
+        setEndDate(end)
     };
 
     // Agregamos clase personalizada a días que están justo antes de una fecha reservada
     const dayClassName = (date) => {
-        const diaSiguiente = addDays(date, 1);
+        const diaSiguiente = addDays(date, 1)
         const siguienteReservada = fechasPlanas.some((f) => isSameDay(f, diaSiguiente));
-        return siguienteReservada ? "dia-bloqueo-previo" : "";
+        return siguienteReservada ? "dia-bloqueo-previo" : ""
     };
 
     return (

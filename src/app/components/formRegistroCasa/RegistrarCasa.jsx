@@ -39,7 +39,20 @@ export default function RegistrarCasa() {
 	const router = useRouter()
   	const siguientePaso = () => setPasoActual((prev) => prev + 1);
  	const pasoAnterior = () => setPasoActual((prev) => prev - 1);
-
+	const validarPaso = () => {
+    switch (pasoActual) {
+		case 0: return tipo.trim() !== "";
+		case 1: return tipoAlojamiento.trim() !== "";
+		case 2: return ubicacion.pais && ubicacion.departamento && ubicacion.ciudad && ubicacion.direccion && ubicacion.postal;
+		case 3: return infoAlojamiento.huespedes > 0 && infoAlojamiento.habitaciones > 0;
+		case 4: return servicios.length > 0;
+		case 5: return rutas !== null; 
+		case 6: return titulo.trim().length > 5;
+		case 7: return descripcion.trim().length > 10;
+		case 8: return precio.trim() !== "" && Number(precio) > 0;
+		default: return true;
+		}
+	};
   	const pasos = [
 		<TipoAlojamiento
 			tipo={tipo}
@@ -65,26 +78,27 @@ export default function RegistrarCasa() {
 			rutas={rutas}
 			setRutas={setRutas}
     	/>,
-		<fieldset>
-			<legend>Título</legend>
+		<fieldset className="mb-6">
+			<legend className="text-sm font-medium text-gray-700">Título</legend>
 			<textarea
-				className='w-full h-40 p-5'
+				className="w-full h-40 p-4 mt-2 rounded-xl border border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-300 outline-none resize-none shadow-sm"
 				value={titulo}
-				onChange={(e)=>(setTitulo(e.target.value))}
+				onChange={(e) => setTitulo(e.target.value)}
 			/>
 		</fieldset>,
-		<fieldset>
-			<legend>Descripción</legend>
+		<fieldset className="mb-6">
+			<legend className="text-sm font-medium text-gray-700">Descripción</legend>
 			<textarea
-				className='w-full h-40 p-5'
+				className="w-full h-40 p-4 mt-2 rounded-xl border border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-300 outline-none resize-none shadow-sm"
 				value={descripcion}
-				onChange={(e) =>setDescripcion(e.target.value)}
+				onChange={(e) => setDescripcion(e.target.value)}
 			/>
 		</fieldset>,
 		<fieldset>
-			<legend>Precio</legend>
+			<legend className="text-sm font-medium text-gray-700">Precio</legend>
 			<input
-				type="text"
+				type="number"
+				className="w-full p-4 mt-2 rounded-xl border border-gray-200 focus:border-gray-400 focus:ring-1 focus:ring-gray-300 outline-none shadow-sm"
 				value={precio}
 				onChange={(e) => setPrecio(e.target.value)}
 			/>
@@ -95,28 +109,29 @@ export default function RegistrarCasa() {
         alojamiento: tipo,
         id_user: user?.id,
         tipo_alojamiento : tipoAlojamiento,
-        pais: ubicacion.pais,
-        departamento : ubicacion.departamento,
-        ciudad: ubicacion.ciudad,
-        direccion: ubicacion.direccion,
-        codigo_postal: ubicacion.postal,
+        pais: ubicacion.pais.trim(),
+        departamento : ubicacion.departamento.trim(),
+        ciudad: ubicacion.ciudad.trim(),
+        direccion: ubicacion.direccion.trim(),
+        codigo_postal: ubicacion.postal.trim(),
         huespedes: infoAlojamiento.huespedes,
         habitaciones: infoAlojamiento.habitaciones,
         camas:infoAlojamiento.camas,
         baños:infoAlojamiento.baños,
         servicios: servicios,
         fotos: rutas,
-        titulo: titulo,
-        descripcion : descripcion,
-        precio: precio
+        titulo: titulo.trim(),
+        descripcion : descripcion.trim(),
+        precio: precio.trim()
     }  
 	const uploadData = async ()=>{
 		await insertAlojamiento(ubicacion.direccion, dataFormulario)
 		if(error) {
-			console.log(error)		
+			console.log('error al registrar anuncio',error)		
 			return
 		}
 		router.push('/?modoAnfitrion=true')
+
 	}  
   return (
     <div className="w-full md:w-[50%] mx-auto pb-20">
@@ -126,26 +141,36 @@ export default function RegistrarCasa() {
 			<div className="flex justify-between mt-5">
 				{pasoActual > 0 && (
 					<button
-					type="button"
-					onClick={pasoAnterior}
-					className="bg-gray-300 px-4 py-2 rounded"
+						type="button"
+						onClick={pasoAnterior}
+						className="bg-gray-300 px-4 py-2 rounded"
 					>
-					Atrás
+						Atrás
 					</button>
 				)}
 				{pasoActual < pasos.length - 1 ? (
 					<button
-					type="button"
-					onClick={siguientePaso}
-					className="bg-blue-500 text-white px-4 py-2 rounded"
+						type="button"
+						onClick={siguientePaso}
+						disabled={!validarPaso()}
+						className={`px-4 py-2 rounded text-white 
+							${validarPaso() 
+								? "bg-blue-500 hover:bg-blue-600" 
+								: "bg-gray-300 cursor-not-allowed"
+              				}`}
 					>
-					Siguiente
+						Siguiente
 					</button>
 				) : (
 					<button
 						type='button'
 						onClick={uploadData}
-						className='bg-cyan-700 px-5 py-3 rounded-2xl'
+						disabled={!validarPaso()}
+						className={`px-4 py-2 rounded text-white 
+							${validarPaso() 
+								? "bg-blue-500 hover:bg-blue-600" 
+								: "bg-gray-300 cursor-not-allowed"
+              				}`}
 					>Registrar</button>  
 				)}
 			</div>

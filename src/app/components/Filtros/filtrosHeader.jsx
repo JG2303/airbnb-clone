@@ -69,17 +69,16 @@ export default function FiltrosHeader(){
             console.error("Error en la búsqueda:", error.message)
         }
     }
-   
-    console.log('datos en el global:', searchData)
-    
     return( 
-        <>  
-
-            <div className=" grid grid-cols-3 gap-1">
-                <div className="">                    
+        <> 
+            <div className=" grid grid-cols-1 py-5 md:py-0 gap-4 md:grid-cols-3 md:gap-1">
+                {/* ---------------------------ciudades------------------------ */}
+                <div >
+                    <h2 className="text-[30px] font-bold md:hidden">¿Dónde?</h2>                    
                     <DropdownFiltros filtro={filtro} setFiltro={setFiltro} />
                 </div>
                 {/* -----------------------------seleccionar fechas---------------------- */}
+                <h2 className="text-[30px] font-bold md:hidden">¿Cuándo?</h2>
                 <div className="grid grid-cols-2 gap-1  text-[11px]">
                     <div className="flex flex-col justify-center rounded-full   px-2 hover:bg-gray-200">
                         <label htmlFor="in">Check-in </label>
@@ -91,6 +90,7 @@ export default function FiltrosHeader(){
                     </div>
                 </div>
                 {/* -------------------------seleccionar cantidad de huespedes------------- */}
+                <h2 className="text-[30px] font-bold md:hidden">Quién</h2>
                 <div className=" flex justify-between rounded-full  hover:bg-gray-200 w-full "> 
                     <div className="w-full">
                         <DropdownHuespedes 
@@ -104,7 +104,7 @@ export default function FiltrosHeader(){
                     </div>                                      
                     <div className="px-3 rounded-full py-1 flex justify-center items-center">
                         <button 
-                            className=" bg-red-500 w-[90%] h-[90%] rounded-full px-[21px] cursor-pointer hover:bg-red-700"
+                            className=" bg-red-500 p-4 rounded-full  cursor-pointer hover:bg-red-700"
                             onClick={(e)=>handleFiltros(e)}
                         >
                             <Search color="white" size={20}/>

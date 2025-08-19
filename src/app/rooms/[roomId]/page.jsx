@@ -1,21 +1,23 @@
 'use client'
 import DropdownHuespedes from "@/app/components/dropdown/DropHuespedes"
-import { ArrowLeft, Heart, Search, Share } from "lucide-react"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useReservaStore } from "@/app/stores/storeReserva"
 import { differenceInCalendarDays, eachDayOfInterval, format, parseISO } from "date-fns"
-import { AlarmSmoke, CircleDot, Droplets, FireExtinguisher, Flame, HelpCircle, Laptop, LayoutGrid, Music, ParkingCircle, ParkingSquare, ShowerHead, Tv, Umbrella, Utensils, WashingMachine, Waves, Wifi, Wind } from "lucide-react";
-import { useUser } from "@clerk/nextjs"
+import { AlarmSmoke, CircleDot, Droplets, FireExtinguisher, Flame, HelpCircle, Laptop, LayoutGrid, Music, ParkingCircle, ParkingSquare, ShowerHead, Tv, Umbrella, Utensils, WashingMachine, Waves, Wifi, Wind, ArrowLeft, ArrowRight } from "lucide-react";
+import { useClerk, useUser } from "@clerk/nextjs"
 import useFavoritos from "@/hooks/useFavoritos"
 import Mapa from "@/app/components/mapas/mapa"
 import CalendarioFechas from "@/app/components/calendario/calendarioFechas"
 import CalendarioDoble from "@/app/components/calendario/calendarioDoble"
 import Calendario from "@/app/components/calendario/calendario"
 import DropdownHuespedesCelu from "@/app/components/dropdown/DropHuespedesCelu"
-import DropdownCalendarioPc from "@/app/components/dropdown/dropdownCalendarioPc"
+import DropdownBase from "@/app/components/dropdown/dropdownBase"
+import Link from "next/link"
+import ModalFotos from "@/app/components/modals/modalFotos"
 export default function Rooms(){ 
+     
     const opciones = [
         {id: "wifi", nombre : "Wifi", icono: Wifi},
         {id: "tv", nombre: "TV", icono: Tv},
@@ -38,12 +40,14 @@ export default function Rooms(){
         {id: "playa", nombre:"Acceso a la playa", icono: Umbrella}
     ];
     const {user} = useUser()
+    const { openSignIn } = useClerk();
     const {alojamientoId, datosReserva} = useFavoritos()
     const [dataset, setDataset] = useState(null)
     const [fechasReservadas, setFechasReservadas] = useState([])
     const [dataReserva, setDataReserva] = useState(null)    
     const [open, setOpen] = useState(false)  
-    const [openPc, setOpenPc] = useState(false)  
+    const [openPc, setOpenPc] = useState(false) 
+    const [openFotos, setOpenFotos] = useState(false)    
     const route = useRouter() 
     const [fechaInicio, setFechaInicio] = useState(null)
     const [fechaFin, setFechaFin] = useState(null)
@@ -88,7 +92,9 @@ export default function Rooms(){
         const textoBoton = e.target.textContent
         const id= e.target.id
         if(textoBoton === "Reserva" ){    
-            if(!user)return alert('inicia sesion')        
+            if(!user){
+                return openSignIn({})
+            }       
             route.push(`/rooms/${roomId}/reserva`)    
         // ---------------------------estado global------------------        
             setDatosReserva({
@@ -109,11 +115,13 @@ export default function Rooms(){
             id ==="celular" ? setOpen(true): setOpenPc(true)          
         }
     } 
-    const abrirmenu = ()=>{
-       
-    }
-    const direccion = `${dataset?.direccion}, ${dataset?.ciudad}, ${dataset?.departamento}`
     
+    const direccion = `${dataset?.direccion}, ${dataset?.ciudad}, ${dataset?.departamento}`
+    const menuBotonReserva = (
+        <div role="button" className=" text-left p-2">
+             <p>{diasTotal ? `${fechaInicio?.toLocaleDateString("es-ES")} - ${fechaFin?.toLocaleDateString("es-ES")}` : "selecciona fechas"}</p>        
+        </div>
+    )
 
     useEffect(()=>{
         obtenerData() 
@@ -127,7 +135,7 @@ export default function Rooms(){
        <div className="container-rooms container relative flex flex-col md:w-[90%] md:m-auto  " >
             {dataset &&(
                 <div className="flex flex-col   gap-4 ">
-                 {/* ------------------foto  celular----------------------- */}
+                 {/* ------------------fotos----------------------- */}
                     
                         <section  className="grid grid-cols-4 grid-rows-2 gap-2  h-[40vh] w-full  ">
                             <div className=" col-span-4 row-span-2 md:col-span-2 md:row-span-2  ">
@@ -136,21 +144,21 @@ export default function Rooms(){
                                     alt="mio"
                                     width={700}
                                     height={200}
-                                    onClick={abrirmenu}
-                                    className="w-full h-full object-cover md:rounded-2xl"
+                                    onClick={()=>{setOpenFotos(true)}}
+                                    className="w-full h-full transform transition-transform duration-300  object-cover md:rounded-2xl cursor-pointer hover:scale-[1.01] "
                                 />
                             </div>
                             {
                                 dataset.fotos
                                 .filter((f,i)=>i !== 0 && i <= 4)
                                 .map((foto,i)=>(
-                                    <div key={i}  className="relative w-full h-full overflow-hidden">
+                                    <div key={i}  className="relative transform transition-transform duration-300 w-full h-full overflow-hidden cursor-pointer hover:scale-[1.01]">
                                         <Image 
                                             src={foto}
                                             alt="foto"
                                             fill
                                             priority
-                                            onClick={abrirmenu}
+                                            onClick={()=>{setOpenFotos(true)}}
                                             className=" object-cover md:rounded-2xl"
                                         />
                                     </div>
@@ -158,26 +166,14 @@ export default function Rooms(){
                                 ))
                             }
                         </section>
-                            {/* -------------iconos de favorito y compartir----------- */}
-                            <div className="absolute  top-2 w-full flex justify-between px-3 md:static md:justify-end md:order-first">
-                                <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2 md:hidden">
-                                    <ArrowLeft size={15}/>
-                                </div>
-                                <div className="flex justify-center gap-3">
-                                    <div className=" md:flex md:justify-center md:items-center md:gap-2">
-                                        <span className="hidden  md:block">Compartir</span>
-                                        <div className="bg-gray-200/30 backdrop-blur-2xl rounded-full p-2 md:bg-none ">
-                                            <Share size={15} />
-                                        </div>
+                            {/* -------------iconos  de atras(celu)  ----------- */}
+                            <div className="absolute  top-2 w-full flex justify-between px-3   md:order-first">
+                                <Link href={'/'}>
+                                    <div className="bg-gray-300/30 backdrop-blur-2xl rounded-full p-2 hover:bg-gray-100/60">
+                                        <ArrowLeft size={15}/>
                                     </div>
-                                    <div className=" md:flex md:justify-center md:items-center md:gap-2">
-                                        <span className="hidden  md:block">Guardar</span>
-                                        <div className="bg-gray-400/30 backdrop-blur-2xl rounded-full p-2 md:bg-none">
-                                            <Heart size={15}/>
-                                        </div>
-                                    </div>
-                                   
-                                </div> 
+                                </Link>
+                                
                             </div>
                         {/* -------------------------fin session de foto celular-------- */}
                     <div className="flex flex-col  rounded-t-3xl bg-white -mt-8 md:flex-row md:rounded-none  md:m-0">
@@ -261,7 +257,7 @@ export default function Rooms(){
                         <div className="sticky bottom-0 z-1000 bg-white md:bg-none md:z-1 w-full flex justify-between items-centercenter md:flex-col md:w-[40%]  ">
                             
                             {/* -----------------------boton y huespedes--------------------------- */}
-                            <div className=" flex w-full md:h-80 border border-gray-100 items-center gap-2 md:sticky md:flex-col md:items-start md:shadow-2xl md:border md:border-gray-100 md:rounded-xl md:top-30 px-4 py-2 ">
+                            <div className=" flex  w-full md:h-80 border border-gray-100 items-center gap-2 md:sticky md:flex-col md:items-start md:shadow-2xl md:border md:border-gray-100 md:rounded-xl md:top-30 px-4 py-2 ">
                                 {/* --------------------------precio------------------------- */}
                                 <div className="flex flex-col justify-center items-start w-[50%]  md:flex-col">
                                     <p className=" text-[16px] font-bold md:text-[20px] text-gray-700  ">
@@ -278,10 +274,22 @@ export default function Rooms(){
                                 <div className=" flex-col md:w-full  md:h-40 w-[50%]  ">
                                     <div className=" flex flex-col  gap-4 rounded-xl  md:sticky top-30 "> 
                                         <div className=" border border-gray-400 rounded-xl hidden md:block">
-                                            <div>                                    
-                                                <DropdownCalendarioPc />
+                                            <div className="md:border-b md:border-gray-200 ">                                    
+                                                {
+                                                    openPc && (
+                                                        <DropdownBase menuBoton={menuBotonReserva} >
+                                                            <CalendarioDoble 
+                                                                startDate={fechaInicio}
+                                                                endDate={fechaFin}
+                                                                setStartDate={setFechaInicio}
+                                                                setEndDate={setFechaFin}
+                                                                fechasReservadas={fechasReservadas}
+                                                            />  
+                                                        </DropdownBase> 
+                                                    )
+                                                }                                             
                                             </div>                               
-                                            <div>                                                                        
+                                            <div className="md:hover:bg-gray-100 rounded-b-xl">                                                                        
                                                 <DropdownHuespedes huespedesPermitidos={dataset.huespedes} setDataHuespedes={setDataHuespedes}/>          
                                             </div>  
                                         </div> 
@@ -337,18 +345,36 @@ export default function Rooms(){
                     </div>
                 </div>
                 {/* -----------------------------------boton + precio----------------------- */}
-                <div className="flex flex-col justify-center  items-start w-[50%] h-20 md:flex-col ">
-                    <p className="md:text-[25px] text-gray-700 ">
-                        {fechaInicio && fechaFin
-                            ? (`$ ${dataset.precio * diasTotal} COP ` ) 
-                            :("Agrega las fechas para ver los precios") } 
-                    </p>
-                    <p className="text-gray-700 ">
-                        {fechaInicio && fechaFin && (`Por ${diasTotal>1 ? (`${diasTotal} noches`) : (`${diasTotal} noche`) } ` )} 
-                    </p>
-                    
+                <div className="flex gap-4">
+                    <div className="flex flex-col justify-center  items-start w-[50%] h-20 md:flex-col ">
+                        <p className="md:text-[25px] text-gray-700 ">
+                            {fechaInicio && fechaFin
+                                ? (`$ ${dataset.precio * diasTotal} COP ` ) 
+                                :("Agrega las fechas para ver los precios") } 
+                        </p>
+                        <p className="text-gray-700 ">
+                            {fechaInicio && fechaFin && (`Por ${diasTotal>1 ? (`${diasTotal} noches`) : (`${diasTotal} noche`) } ` )} 
+                        </p>
+                        
+                    </div>
+                    <div className="flex  justify-center items-center w-[40%]  ">
+                        <button 
+                            onClick={()=>setOpen(false)}
+                            className=" bg-red-400 h-[80%] w-full text-white font-bold rounded-2xl">
+                                confirmar
+                            </button>
+                    </div>
                 </div>
             </Calendario>
+            {
+                openFotos && (
+                    <ModalFotos 
+                        isOpen={openFotos}
+                        onClose={()=>setOpenFotos(false)}
+                        fotos={dataset?.fotos}
+                    />
+                )
+            }
        </div>
           
     )

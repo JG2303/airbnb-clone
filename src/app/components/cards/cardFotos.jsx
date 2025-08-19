@@ -37,8 +37,26 @@ export default function CardFotos({ciudad}){
     const [idAnuncio, setIdAnuncio] = useState(null)
     const [anuncios, setAnuncios] = useState(false)
     const [eliminar, setEliminar] = useState(false)
+    const [reservas, setReservas] = useState(false)
+    const [dataReservas, setDataReservas] = useState({
+        fecha_entrada:''  ,
+        fecha_salida: '',
+        precio: null,
+        adultos: null,
+        titulo: '',
+        id_reserva: null
+
+    })
     const searchData = useStoreSearch((state)=>state.searchData)
-    const {favoritosUsuario, agregarFavoritos, eliminarFavoritos, selectAlojamientoCiudad, esAnfitrion, deleteAlojamiento} = useFavoritos()     
+    const { favoritosUsuario, 
+            agregarFavoritos, 
+            eliminarFavoritos,
+            selectAlojamientoCiudad,
+            esAnfitrion, 
+            deleteAlojamiento, 
+            selectReservas,
+            deleteReserva
+          } = useFavoritos()     
     const [mostrarModal, setMostrarModal]=useState(false)     
     //  ---------------carga de datos iniciales---------------------
     const mostrarDatos = async () =>{ 
@@ -57,6 +75,21 @@ export default function CardFotos({ciudad}){
             setDataAlojamiento(data)            
         }else if(ciudad === "filtros"){
             setDataAlojamiento(searchData)
+        }else if(ciudad === "reservas"){            
+            const { data, error } = await selectReservas(user?.id) 
+            if (error) {
+                console.error('Error al obtener reservaciones:', error.message)
+                return
+            }
+            
+            const reservas = data.map(r => ({
+                ...r,
+                ...r.alojamiento,   // esto aplana los campos de alojamiento al objeto raíz
+                
+            }));
+            setDataAlojamiento(reservas) 
+            setReservas(true)
+            
         }else{          
             // --------------------------pagina home-------------------
             const {data, error} = await selectAlojamientoCiudad(ciudad)
@@ -100,9 +133,19 @@ export default function CardFotos({ciudad}){
         return texto.charAt(0).toUpperCase() + texto.slice(1)
     }
     // -----------------------------configuracion del anuncio-----------------
-    const handleAnuncio = (id) => {
+    const handleAnuncio = (id_alojamiento,id_reserva ,ingreso, salida, precio, huespedes, titulo) => {
         setClickAnuncio(true)
-        setIdAnuncio(id)
+        setIdAnuncio(id_alojamiento)
+        setDataReservas({...dataReservas,
+            fecha_entrada: ingreso,
+            fecha_salida: salida,
+            precio,
+            adultos: huespedes,
+            titulo,
+            id_reserva        
+            }
+        )
+        
     }
     // -------------------------------eliminar anuncio-------------------------
     
@@ -120,15 +163,27 @@ export default function CardFotos({ciudad}){
     // -------------------------------eliminar anuncio-------------------------
     const handleEditarAnuncio = () =>{
        router.push(`/anfitrion/editar/${idAnuncio}`)
-    }
+    }  
+    //-----------------------------eliminar reserva-------------------
+    const eliminarReserva = async (id) => {
+        const {error} = await deleteReserva(id)
+        if(error) {
+            console.error('Error al eliminar reserva')
+            return
+        }
+        alert('Reserva cancelada')
+        setClickAnuncio(false)  
+        setEliminar(false)
+        setIdAnuncio(null)
+        mostrarDatos()
+    }  
     //-------------------cargar datos al montar pagina---------------
     useEffect(() => {
         mostrarDatos()  
         if (user) {                 
             setMostrarModal(false);            
         }
-    }, [user]);
-    
+    }, [user]);    
     if (error) return <p>Error al cargar las fotos: {error.message}</p>;    
     return (        
         <>
@@ -139,27 +194,41 @@ export default function CardFotos({ciudad}){
                     <Skeleton width={150} height={25} style={{ marginTop: '20px' }} />
                 </>
             ):(
-                dataAlojamiento?.map((alojamiento)=>( 
-                    anuncios 
+                dataAlojamiento?.map((alojamiento,i)=>( 
+                    anuncios || reservas
                     ?
-                       <div key={alojamiento?.id} role="button" onClick={()=>handleAnuncio(alojamiento.id)} className=" flex flex-col flex-wrap w-full h-full md:w-full md:h-full ">
-                            <div  className={` w-full h-[150px] md:w-full  md:h-[200px] `}>
-                                <Image 
-                                    src={alojamiento.fotos?.[1] || '/images/net.png'}
-                                    alt={alojamiento.id}  
-                                    width={300}
-                                    height={300}                                      
-                                    priority                                     
-                                    className="rounded-[20px] object-cover w-full h-full"                                
-                                />
-                            </div>
-                            <div >
-                                <h2 className="text-[12px] md:text-[15px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>
-                                
-                            </div>
-                       </div>
+                    <div key={i} 
+                        role="button" 
+                        onClick={
+                                ()=>handleAnuncio(
+                                        alojamiento.id_alojamiento,
+                                        alojamiento.id,                                        
+                                        alojamiento.fecha_entrada,
+                                        alojamiento.fecha_salida,
+                                        alojamiento.costo_total,
+                                        alojamiento.adultos,
+                                        alojamiento.titulo
+                                    )} 
+                        className=" flex flex-col flex-wrap w-full h-full md:w-full md:h-full ">
+                         <div  className={` w-full h-[150px] md:w-full  md:h-[200px] `}>
+                             <Image 
+                                src={alojamiento.fotos?.[1] || '/images/net.png'}
+                                alt={alojamiento.id}  
+                                width={300}
+                                height={300}                                      
+                                priority                                     
+                                className="rounded-[20px] object-cover w-full h-full"                                
+                            />
+                         </div>
+                         <div >
+                             <h2 className="text-[12px] md:text-[15px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>
+                             {
+                                 
+                             }                                
+                         </div>
+                    </div>
                     :
-                    <div  key={alojamiento.id} className="flex flex-col md:flex-wrap w-full h-full md:w-full md:h-full ">                        
+                    <div  key={i} className="flex flex-col md:flex-wrap w-full h-full md:w-full md:h-full ">                        
                         <div className={`relative`}>
                             <Link href={`/rooms/${alojamiento.id}`} >
                                 <div className={` ${paginaFavorito 
@@ -209,6 +278,7 @@ export default function CardFotos({ciudad}){
                     </Modal>
                 )
             }
+            
             {
                 user && clickAnuncio &&(
                     <ModalBase 
@@ -221,7 +291,7 @@ export default function CardFotos({ciudad}){
                         >
                         
                         {
-                            eliminar ?(
+                            eliminar  ?(
                                 <div className="flex flex-col gap-3">
                                     <h2 className="text-center font-bold ">¿Quieres eliminar este anuncio?</h2>
                                     <p>Esto es permanente: ya no podrás encontrar ni editar este anuncio.</p>
@@ -243,6 +313,38 @@ export default function CardFotos({ciudad}){
                                     </div>
                                 </div>
                             )
+                            : reservas  ?(
+                               <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md mx-auto flex flex-col gap-6">
+                                    
+                                    <div className="border-b pb-3">
+                                        <h2 className="text-2xl font-semibold text-gray-800">Detalles de la reserva</h2>
+                                    </div>
+                                    
+                                    <div className="space-y-2 text-gray-700">
+                                        <p className="text-lg font-medium">{dataReservas.titulo}</p>
+                                        <p><span className="font-semibold">Fecha ingreso:</span> {dataReservas.fecha_entrada}</p>
+                                        <p><span className="font-semibold">Fecha salida:</span> {dataReservas.fecha_salida}</p>
+                                        <p><span className="font-semibold">Huéspedes:</span> {dataReservas.adultos}</p>
+                                        <p className="text-lg"><span className="font-semibold">Precio total:</span> ${dataReservas.precio}</p>
+                                    </div>
+                                    
+                                    <div className="flex flex-col gap-3">
+                                        <Link href={`/rooms/${idAnuncio}`}>
+                                            <button className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-semibold hover:opacity-90 transition">
+                                                Visitar anuncio
+                                            </button>
+                                        </Link>
+                                        <button 
+                                            type="button"
+                                            onClick={()=>eliminarReserva(dataReservas.id_reserva)}
+                                            className="w-full py-3 rounded-xl  text-gray-900 font-medium hover:bg-gray-300 transition"
+                                        >
+                                            Cancelar reservación
+                                        </button>
+                                    </div>
+                                </div>
+
+                            ) 
                             :
                             (<div className="flex flex-col gap-3 p-4">
                                 <div className="m-auto">
@@ -260,7 +362,8 @@ export default function CardFotos({ciudad}){
                                 <button 
                                     type="button"
                                     onClick={()=> setEliminar(true)}
-                                    className="flex w-full justify-center gap-4 rounded-xl py-4 hover:bg-gray-200">
+                                    className="flex w-full justify-center gap-4 rounded-xl py-4 hover:bg-gray-200"
+                                >
                                     <Trash2Icon />
                                     Elimina el anuncio
                                 </button>
@@ -270,6 +373,7 @@ export default function CardFotos({ciudad}){
                     
                 )
             }
+            
         </>
     );
 }

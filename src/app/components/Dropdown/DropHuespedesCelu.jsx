@@ -1,22 +1,6 @@
-
-
-/**
- * Componente DropdownHuespedes para seleccionar la cantidad de huéspedes (adultos, niños, bebés y mascotas).
- *
- * Este componente muestra un menú desplegable que permite al usuario ajustar el número de cada tipo de huésped,
- * respetando el límite máximo permitido. Los cambios se comunican al componente padre mediante la función setDataHuespedes.
- *
- * Props:
- * @param {number} [huespedesPermitidos=15] - Número máximo de huéspedes permitidos (adultos + niños).
- * @param {function} setDataHuespedes - Función para actualizar los datos de huéspedes en el componente padre.
- * @param {string} [lugar="reserva"] - Contexto de uso del dropdown ("reserva" para reservas, "filtros" para filtros de búsqueda).
- *
- * @returns {JSX.Element} Menú desplegable para seleccionar la cantidad de huéspedes.
- */
 'use client'
 import { useEffect, useState } from "react";
 import CantidadBoton from "../formRegistroCasa/elements/cantidadBoton";
-import DropdownBase from "./dropdownBase";
 export default function DropdownHuespedesCelu({huespedesPermitidos=15,setDataHuespedes, lugar="reserva" }) {  
   let tope = huespedesPermitidos - 1 
   const [maximo, setMaximo] = useState(tope)

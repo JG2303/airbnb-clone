@@ -3,8 +3,10 @@ import { Search } from "lucide-react";
 import FiltrosHeader from "../filtros/filtrosHeader";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import ModalBase from "../modals/modalBase";
 
 export default function Navbar(){
+    const [isOpen, setIsOpen]= useState(false)
     const [mostrarIconos, setMostrarIconos] = useState(true)
     const itemsAirbnb = [
         {
@@ -80,16 +82,31 @@ export default function Navbar(){
                         <div className="flex flex-row justify-center order-1 items-center  w-full gap-3 md:hidden ">                                                         
                                 <button 
                                     type="button"
-                                    // onClick={()=>setMostrarModal(true)}
-                                    className="flex justify-center items-center gap-4 w-full rounded-full  bg-white cursor-pointer"
+                                    onClick={()=>setIsOpen(true)}
+                                    className={`flex justify-center items-center gap-4 w-full rounded-full  bg-white cursor-pointer ${isOpen && "hidden"}`}
                                 >
                                     <Search />
                                     Empieza la busqueda
+                                    
                                 </button>
-                        </div>
-                            
+                        </div>                            
                     </div>       
                 </div>  
+                {
+                    isOpen && (
+                        <div>
+                            <ModalBase 
+                                isOpen={isOpen} 
+                                onClose={()=> setIsOpen(false) }
+                                alto={'h-full'}
+                                
+                            >                                
+                                <FiltrosHeader>                            
+                                </FiltrosHeader>
+                            </ModalBase>
+                        </div>
+                    )
+                }
             </div>
     )
 }

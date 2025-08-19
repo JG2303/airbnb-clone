@@ -1,10 +1,10 @@
-import { Inter, Nunito} from "next/font/google";
+import { Inter, Poppins} from "next/font/google";
 import { ClerkProvider} from '@clerk/nextjs'
 import "./globals.css";
 import Footer from "./components/footer/footer";
 import ClientLayout from "./clientLayout";
 const inter = Inter({
-  variable: "--font-inter",
+  variable: "--font-poppins",
   subsets: ["latin"],
 });
 
@@ -14,17 +14,19 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {   
-  return (
-    <ClerkProvider appearance={{cssLayerName: 'clerk', }}>      
-        <html lang="es" className={`${inter.variable} `}>
-          <body >
-            <ClientLayout>
-              {children}
-            </ClientLayout>
-            
-          </body> 
-        </html>        
-    </ClerkProvider>
+	return (
+		<ClerkProvider appearance={{cssLayerName: 'clerk', }}>      
+			<html lang="es" className={`${inter.variable} `}>
+				<body className="min-h-screen flex flex-col">
+					<ClientLayout>
+						<main className="flex-1">
+							{children}
+						</main>
+						<Footer />
+					</ClientLayout>					
+				</body> 
+			</html>        
+		</ClerkProvider>
 
-  );
+	);
 }

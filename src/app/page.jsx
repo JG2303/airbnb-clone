@@ -12,12 +12,12 @@ export default function Home(){
     const scrollRefSession4 = useRef(null)
     const sessionesAlojamientos = [
         {nombre:"cartagena", scrollRef: scrollRefSession1},
-        {nombre:"valledupar", scrollRef: scrollRefSession2},
-        {nombre:"Santa marta", scrollRef: scrollRefSession3},
-        {nombre:"Guatape", scrollRef: scrollRefSession4},
+        {nombre:"cali", scrollRef: scrollRefSession2},
+        {nombre:"girardot", scrollRef: scrollRefSession3},
+        {nombre:"santa marta", scrollRef: scrollRefSession4},
     ]
     return (  
-        <div className=" pl-7 pt-3  flex flex-col gap-2 pb-20">     
+        <div className=" pl-7 pt-3 flex flex-col gap-2 pb-20">     
             {/* ---------------------sesiones----------------------        */}
             {
                 sessionesAlojamientos.map((session, id)=>(

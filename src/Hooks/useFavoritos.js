@@ -187,6 +187,18 @@ export default function useFavoritos(){
             if(error) setError(error)
             return{error}
          }  
+        //  ----------------------------------eliminar reservacion-------------------------------
+        const deleteReserva = async (id) =>{
+            setIsLoading(true)
+            setError(null)
+            const {error} = await supabase 
+                .from('reservas')
+                .delete()
+                .eq('id', id)
+            setIsLoading(false)
+            if(error) setError(error)
+            return{error}
+        }
         //  ------------------------------actualizar alojamiento/anuncio----------------------
         const updateAlojamiento = async (id, datos) =>{
             setIsLoading(true)
@@ -195,10 +207,49 @@ export default function useFavoritos(){
                 .from('alojamiento')
                 .update(datos)
                 .eq('id', id)
-            if(error) setError(error)
             setIsLoading(false)
+            if(error) setError(error)
+            return{error}
         } 
+        // ---------------------------------obtener reservaciones del usuario---------------------
+        const selectReservas = async (user) => {
+            setIsLoading(true)
+            setError(null)
+            const {data, error} = await supabase
+                .from('reservas')
+                .select(`
+                    id,
+                    id_alojamiento,
+                    fecha_entrada, 
+                    fecha_salida, 
+                    adultos, 
+                    costo_total,
+                    alojamiento(
+                       alojamiento,
+                       baños,
+                       camas,
+                       ciudad,
+                       codigo_postal,
+                       departamento,
+                       descripcion,
+                       titulo,
+                       direccion,
+                       fotos,
+                       habitaciones,
+                       huespedes,
+                       pais,
+                       precio,
+                       servicios,
+                       tipo_alojamiento
 
+                    )`)
+                .eq('id_usuario', user) 
+                           
+            if(error)setError(error)
+            setIsLoading(false)
+            return{error, data}
+            
+        } 
         // ----------------------------------------filtrar ciudad y fecha ----------------------------
         const selectFechaCiudad = async (ciudad, fechaInicio, fechaFin) => {
             try {
@@ -247,6 +298,8 @@ export default function useFavoritos(){
         esAnfitrion,
         deleteAlojamiento,
         updateAlojamiento,
+        selectReservas,
+        deleteReserva,
         error,
         isLoading
     }

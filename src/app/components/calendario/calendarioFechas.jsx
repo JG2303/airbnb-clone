@@ -1,6 +1,6 @@
+'use client'
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
-
 export default function CalendarioFechas({ escala, startDate, setStartDate, endDate, fechasReservadas, setEndDate}) {
   
   const onChange = (dates) => {

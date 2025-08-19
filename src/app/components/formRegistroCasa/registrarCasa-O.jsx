@@ -8,10 +8,10 @@ import ServiciosHospedaje from './elements/serviciosHospedaje'
 import TipoAlojamiento from './elements/tipoAlojamiento'
 import styles from './registrarCasa.module.css'
 import { useUser } from '@clerk/nextjs'
-import { supabase } from '@/lib/supabaseClient'
+import useFavoritos from '@/hooks/useFavoritos'
 export default function RegistrarCasaE({data}){
     const {user, isLoaded}= useUser() 
-    // if(!user) return(<div>Acceso denegado</div>)
+    const {updateAlojamiento} = useFavoritos()    
     const [tipo, setTipo] = useState(data.alojamiento || "")
     const [tipoAlojamiento, setTipoAlojamiento]= useState(data.tipo_alojamiento ||'')    
     const [ubicacion, setUbicacion] = useState({
@@ -55,26 +55,13 @@ export default function RegistrarCasaE({data}){
         precio: precio
     }    
     const updateData = async ()=>{
-        const {data:existente} = await supabase
-            .from('alojamiento')
-            .select('*')
-            .eq('direccion', ubicacion.direccion)
-        if(existente.length === 0){
-            const {error} = await supabase  
-                .from('alojamiento')
-                .insert(dataFormulario)
-            if (error) {
-            console.error('Error al insertar:', error.message);
-            } else {
-            console.log('Inserción exitosa:', dataFormulario);
-            }       
-        }else{
-            return(
-                alert('Ya esta direccion fue registrada') 
-            )
+        const {error} = updateAlojamiento(data.id, dataFormulario)
+        if(error){
+            console.error('error al actualizar los datos ', error)
+            return
         }
     }
-    console.log('servicios',servicios)
+    console.log(data)
     return(
         <form className={`${styles.formulario} w-full md:w-[50%] pb-20`}  >           
             <TipoAlojamiento tipo={tipo} setTipo={setTipo} />

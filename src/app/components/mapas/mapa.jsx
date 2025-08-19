@@ -15,7 +15,6 @@ L.Icon.Default.mergeOptions({
 export default function Mapa({ direccion = 'colombia' }) { 
 	const API_KEY = process.env.NEXT_PUBLIC_API_GEOAPIFY
 	const [coordenadas, setCoordenadas] = useState(null)
-
 	useEffect(() => {
 		async function buscarCoordenadas() {
 			const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(direccion)}&lang=es&apiKey=${API_KEY}`

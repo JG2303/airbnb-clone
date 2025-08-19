@@ -1,21 +1,35 @@
-import { useState } from "react";
-import DropdownBase from "./dropdownBase";
+'use client'
 import DatePicker from "react-datepicker";
-import CalendarioFechas from "../calendario/calendarioFechas";
-
-export default  function DropdownCalendarioPc(){
-    const [startDate, setStartDate] = useState(new Date("2014/02/08"));
-    const [endDate, setEndDate] = useState(new Date("2014/02/10"));
-    const menuBotonFiltro = (
-        <div role="button" className=" flex flex-col justify-center text-left p-2  h-18  ">
-        <p>Selecciona fechas</p>
-        <p className="text-sm text-gray-500">         
-        </p>
-        </div>
-    ) 
+export default  function DropdownCalendarioPc({startDate, setStartDate, endDate, fechasReservadas, setEndDate}){   
+   
     return (
-        <DropdownBase menuBoton={menuBotonFiltro}>
-            hola
-        </DropdownBase>
-    );
+    <div className="flex  justify-center items-center gap-4 p-4">        
+        <div className=" rounded-lg p-2 w-[50%]  ">            
+            <DatePicker
+                minDate={new Date()}
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="Fecha de entrada"
+                className=" p-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+
+        <div className=" rounded-lg p-2 w-[50%]">
+            
+            <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText="Fecha salida"
+                className="p-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+    </div>
+);
 }

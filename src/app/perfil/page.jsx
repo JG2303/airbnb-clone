@@ -1,12 +1,9 @@
 "use client";
-import { useUser } from "@clerk/nextjs";
+import { SignedIn, SignOutButton, useUser } from "@clerk/nextjs";
 import {
-  ArrowBigRight,
-  DoorClosedIcon,
-  Rows,
+  DoorClosedIcon,  
   Settings,
   User,
-  User2Icon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,39 +31,47 @@ export default function Perfil() {
             link:"/servicios"
         }
     ] 
-
-  const sombra = "shadow-[0_0_4px_rgba(0,0,0,0.2)]";
+ 
   return (
     user && (
-        <div className="flex flex-col justify-left items-center px-5  w-full">
-            <div className=" grid grid-cols-1 gap-4 w-full">
-            {/* ----------------------------------perfil------------------------------- */}
-                <div className="text-left">
-                    <h1 className="text-[40px] font-bold">Perfil</h1>
+        <div className="flex flex-col justify-left items-center px-5 py-6 w-full md:m-auto md:w-[50%]">
+            <div className="grid grid-cols-1 gap-6 w-full">
+            
+                {/* ---------------------- Título perfil -------------------- */}
+                <div className="text-left md:text-center">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Perfil</h1>
                 </div>
-                {/* -------------------------logo +  nombre----------------------------- */}
-                <div
-                    className={`flex flex-col justify-center items-center p-6 ${sombra} rounded-2xl`}
+                
+                {/* ---------------------- Avatar + Nombre -------------------- */}
+                <div className="flex flex-col justify-center items-center p-6 rounded-2xl">
+                    <div className="relative w-28 h-28">
+                        {
+                            user.imageUrl ? (
+                                <Image
+                                    src={user.imageUrl}
+                                    alt="Foto de perfil"
+                                    fill
+                                    className="rounded-full object-cover border-4 border-gray-200 shadow-lg"
+                                />
+                                ) : (
+                                    <div className="bg-gray-700 rounded-full p-6 flex justify-center items-center w-full h-full">
+                                        <User className="w-12 h-12 text-white" />
+                                    </div>
+                                )
+                        }
+                    </div>
+                    <div className="text-center mt-4">
+                        <p className="text-[28px] font-bold">{user.firstName}</p>
+                        <p className="text-gray-500">Huésped</p>
+                    </div>
+                </div>
+                
+                {/* ---------------------- Anfitrión -------------------- */}
+                <div 
+                  role="button" 
+                  onClick={()=>{setOpenModal(true)}} 
+                  className="flex items-center gap-4 bg-white border border-gray-200 p-4 md:p-5 rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 cursor-pointer transition-all duration-200"
                 >
-                    <div className="bg-gray-700 rounded-full p-6">
-                        <User />
-                    </div>
-                    <div className="text-center">
-                        <p className="text-[40px] font-bold">{user.firstName}</p>
-                        <p>Huésped</p>
-                    </div>
-                </div>
-                {/* ----------------------------viajes------------------------------- */}
-                <div className="flex justify-between gap-6">
-                    <div className={`w-[50%] ${sombra} p-5 rounded-xl`}>
-                        <p>Viajes anteriores</p>
-                    </div>
-                    <div className={`w-[50%] ${sombra} p-5 rounded-xl`}>
-                        <p>conexiones</p>
-                    </div>
-                </div>
-                {/* ------------------------------conviertete en anfitrion------------------ */}
-                <div role="button" onClick={()=>{setOpenModal(true)}} className={`flex justify-between p-2 ${sombra} rounded-xl gap-3`}>
                     <div className="flex justify-center items-center">
                         <Image
                             src={"/images/hospedaje.png"}
@@ -76,98 +81,45 @@ export default function Perfil() {
                         />
                     </div>
                     <div>
-                        <div>
-                            <h2>Conviertete en anfitrión</h2>
-                        </div>
-                        <div>
-                            <p className="text-xs">
-                                Empieza a anfitrionar y genera ingresos adicionales, ¡es muy sencillo!
-                            </p>
-                        </div>
+                        <h2 className="text-lg font-semibold text-gray-800">Conviértete en anfitrión</h2>
+                        <p className="text-sm text-gray-500">
+                            Empieza a anfitrionar y genera ingresos adicionales, ¡es muy sencillo!
+                        </p>
                     </div>
                 </div>
-                {/* ---------------------------------configuracion de la cuenta------------------------ */}
-                <div className="flex flex-col gap-5">
-                    <Link href={"/configuracion-cuenta"}>
-                        <div role="button" className="flex justify-between">
-                            <div className="flex gap-4">
-                                <div>
-                                    <Settings />
-                                </div>
-                                <div>
-                                    <p>Configuración de la cuenta</p>
-                                </div>
-                            </div>
-                            <div>
-                                <ArrowBigRight />{" "}
-                            </div>
+                
+                {/* ---------------------- Opciones de la cuenta -------------------- */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Link href={'/reservaciones'}>
+                        <div role="button" className="flex justify-center md:justify-between items-center bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200">
+                            <span className="text-gray-700 font-medium">Mis reservaciones</span>
                         </div>
                     </Link>
-                    <div role="button" className="flex justify-between">
-                        <div className="flex gap-4">
-                            <div>
-                                <User2Icon />
-                            </div>
-                            <div>
-                                <p>Ver perfil</p>
-                            </div>
+                    <Link href={"/"}>
+                {/* ---------------------- Cerrar sesión -------------------- */}
+                        <div role="button" className="flex justify-center md:justify-between items-center gap-3 bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all duration-200">
+                            <DoorClosedIcon />
+                            <SignedIn>
+                                <SignOutButton>
+                                    <span className="font-medium">Cerrar sesión</span>
+                                </SignOutButton>
+                            </SignedIn>
                         </div>
-                        <div>
-                            <ArrowBigRight />{" "}
-                        </div>
-                    </div>
-                    <div role="button" className="flex justify-between">
-                        <div className="flex gap-4">
-                            <div>
-                                <Settings />
-                            </div>
-                            <div>
-                                <p>Configuración de la cuenta</p>
-                            </div>
-                        </div>
-                        <div>
-                            <ArrowBigRight />{" "}
-                        </div>
-                    </div>
-                    <div role="button" className="flex justify-between">
-                        <div className="flex gap-4">
-                            <div>
-                                <Settings />
-                            </div>
-                            <div>
-                                <p>Configuración de la cuenta</p>
-                            </div>
-                        </div>
-                        <div>
-                            <ArrowBigRight />{" "}
-                        </div>
-                    </div>
-                </div>
-                <hr className="border-none h-[1px] bg-gray-300" />
-                {/* --------------------------------------------recomendacion--------------------------------- */}
-
-                {/* -----------------------------------cerrar sesion---------------------------------- */}
-                <div className="flex gap-5">
-                    <div>
-                        <DoorClosedIcon />
-                    </div>
-                    <div role="button">
-                        <p>Cerrar sesión</p>
-                    </div>
+                    </Link>
+                    
                 </div>
             </div>
-            {/* -----------------------------modal--------------------------------------- */}
-            {
-                openModal &&(
-                    <ModalServicios                         
-                        setMostrarModal={setOpenModal}
-                        seleccionado={seleccionado}
-                        setSeleccionado={setSeleccionado}
-                        onClose={()=>setOpenModal(false)}
-                        itemsAirbnb={itemsAirbnb}
-                    />
-                )
-            }
+
+            {/* ---------------------- Modal -------------------- */}
+            {openModal && (
+                <ModalServicios                         
+                    setMostrarModal={setOpenModal}
+                    seleccionado={seleccionado}
+                    setSeleccionado={setSeleccionado}
+                    onClose={()=>setOpenModal(false)}
+                    itemsAirbnb={itemsAirbnb}
+                />
+            )}
         </div>
     )
   );

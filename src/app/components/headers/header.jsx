@@ -84,16 +84,16 @@ export function Header({children}) {
     useEffect(()=>{
         if (searchParams.get('modoAnfitrion') === 'true') {
             setModoAnfitrion(true)
-            // -------------Limpiar el parámetro de la URL------------
+            // -------------limpiar el parametro de la URL------------
             router.replace(window.location.pathname)
         } else {
             anfitrion()
         }
     },[user,searchParams])
     return(                             
-        <div className="flex justify-between   ">
+        <div className="grid  md:grid-cols-4  ">
             {/* ----------------------------------------logo-------------------------------------- */}
-            <div className={`logo-container  hidden w-100 md:flex `}>
+            <div className={`logo-container hidden w-100 md:flex `}>
                 <Link href="/">
                     <img
                         src="/images/logo.png"
@@ -105,7 +105,9 @@ export function Header({children}) {
                 </Link>
             </div>
             {/* -------------------------------menu nav------------------------------------------- */}
-            {children}
+            <div className="col-span-2">
+                {children}
+            </div>
             {/* -------------------------------------menu celular-------------------------------- */}
             <div className="bg-white fixed bottom-0 left-0 flex justify-between w-full px-6 py-2 md:hidden ">
                     {
@@ -123,10 +125,10 @@ export function Header({children}) {
                     }
             </div>   
             {/* --------------------------------modal de anfitrion------------------------------- */}
-            <div className="hidden md:flex md:items-start md:gap-5 md:justify-center  w-110 ">
+            <div className="hidden md:flex md:items-start md:gap-5 md:justify-end ">
                 <div className="">
                     <button 
-                        className=" cursor-pointer hover:bg-stone-100 rounded-4xl p-2 text-[13px]  "
+                        className=" cursor-pointer  hover:bg-stone-100 rounded-4xl p-2 text-[13px]  "
                         onClick={(e)=>handleModal(e)}
                     >
                         {

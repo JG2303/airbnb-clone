@@ -22,8 +22,7 @@ export default function editar(){
     }
     useEffect(()=>{
         datosAnuncio()
-    },[])
-    console.log(datos?.servicios)
+    },[])    
     return(
         
         datos &&(
@@ -31,7 +30,6 @@ export default function editar(){
                 <button
                     className="bg-red-400 px-4 py-2 rounded-xl cursor-pointer text-white font-bold "
                     onClick={()=>handleVolver()}
-
                 >
                     volver
                 </button>

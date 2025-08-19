@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation"
 import { Header } from "./components/headers/header"
 import Navbar from "./components/navbar/navbar"
+import { Suspense } from "react"
 
 export default function ClientLayout({children}){
     const pathName = usePathname()
@@ -12,12 +13,14 @@ export default function ClientLayout({children}){
     const mostrarNav = rutasNav.includes(pathName)
     return(
     <>
-        <header>
-            <Header>
-                { mostrarNav && <Navbar />}
-            </Header>
+        <Suspense fallback={<div>Cargando...</div>}>  
+            <header>
+                <Header>
+                    { mostrarNav && <Navbar />}
+                </Header>
 
-        </header>       
+            </header>  
+        </Suspense>     
         {children}
     </>
     )
