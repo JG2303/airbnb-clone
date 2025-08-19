@@ -1,30 +1,16 @@
-
-/**
- * El componente CardFotos muestra una lista de tarjetas de alojamientos con imágenes, títulos, ubicación y precio.
- * Permite a los usuarios agregar o quitar alojamientos de sus favoritos.
- * Si el usuario no está autenticado, se muestra un modal para registrarse.
- *
- * @componente
- * @param {Object} props
- * @param {string} [props.lugar="todos"] - Determina qué alojamientos mostrar ("todos" para todos, "favoritos" para favoritos).
- * @returns {JSX.Element} Las tarjetas de alojamiento renderizadas con funcionalidad de favoritos.
- *
- * @ejemplo
- * <CardFotos lugar="todos" />
- */
 'use client'
 import { SignUp, useUser } from "@clerk/nextjs"
 import { Heart, HouseIcon, Trash2Icon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import Modal from "../modals/modal"
-import useFavoritos from "@/hooks/useFavoritos"
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css' 
 import ModalBase from "../modals/modalBase"
 import { useRouter } from "next/navigation"
 import { useStoreSearch } from "@/app/stores/storeSearch"
+import useFavoritos from "@/hooks/useFavoritos"
+import Modal from "../modals/modal"
 export default function CardFotos({ciudad}){ 
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)

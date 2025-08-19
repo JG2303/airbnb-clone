@@ -3,7 +3,6 @@ import RegistrarCasaE from "@/app/components/formRegistroCasa/registrarCasa-O"
 import useFavoritos from "@/hooks/useFavoritos"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-
 export default function editar(){
     const {id} = useParams()
     const {alojamientoId} = useFavoritos()

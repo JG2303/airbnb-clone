@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-const Modal = ({onClose, children}) => {
+export default function Modal({onClose, children}){
     return(
         <div
             style={{
@@ -31,4 +31,3 @@ const Modal = ({onClose, children}) => {
          </div>
     )
 } 
-export default Modal

@@ -1,7 +1,7 @@
 'use client'
-import { useUser } from "@clerk/nextjs";
-import { SignUp } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useUser } from "@clerk/nextjs"
+import { SignUp } from "@clerk/clerk-react"
+import { useState } from "react"
 import RegistrarCasa from "../components/formRegistroCasa/registrarCasa";
 import Modal from "../components/modals/modal";
 export default function alojamiento() {
