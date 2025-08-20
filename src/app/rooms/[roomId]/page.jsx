@@ -1,5 +1,5 @@
 'use client'
-import DropdownHuespedes from "@/app/components/dropdown/DropHuespedes"
+import DropdownHuespedes from "@/app/components/dropdownTest/DropHuespedes"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -12,8 +12,8 @@ import Mapa from "@/app/components/mapas/mapa"
 import CalendarioFechas from "@/app/components/calendario/calendarioFechas"
 import CalendarioDoble from "@/app/components/calendario/calendarioDoble"
 import Calendario from "@/app/components/calendario/calendario"
-import DropdownHuespedesCelu from "@/app/components/dropdown/DropHuespedesCelu"
-import DropdownBase from "@/app/components/dropdown/dropdownBase"
+import DropdownHuespedesCelu from "@/app/components/dropdownTest/DropHuespedesCelu"
+import DropdownBase from "@/app/components/dropdownTest/dropdownBase"
 import Link from "next/link"
 import ModalFotos from "@/app/components/modals/modalFotos"
 export default function Rooms(){ 

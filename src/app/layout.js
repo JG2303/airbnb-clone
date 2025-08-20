@@ -1,7 +1,7 @@
 import { Inter, Poppins} from "next/font/google";
 import { ClerkProvider} from '@clerk/nextjs'
 import "./globals.css";
-import Footer from "./components/footer/footer";
+import Footer from "./components/footertest/footer";
 import ClientLayout from "./clientLayout";
 const inter = Inter({
   variable: "--font-poppins",

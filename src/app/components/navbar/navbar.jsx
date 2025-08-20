@@ -1,6 +1,6 @@
 'use client'
 import { Search } from "lucide-react";
-import FiltrosHeader from "../filtros/filtrosHeader";
+import FiltrosHeader from "../filtrostest/filtrosHeader";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ModalBase from "../modals/modalBase";

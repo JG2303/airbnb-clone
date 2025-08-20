@@ -1,8 +1,8 @@
 'use client'
 import { Search } from "lucide-react"
 import { useState } from "react"
-import DropdownHuespedes from "../dropdown/DropHuespedes"
-import DropdownFiltros from "../dropdown/dropdownFiltro"
+import DropdownHuespedes from "../dropdownTest/DropHuespedes"
+import DropdownFiltros from "../dropdownTest/dropdownFiltro"
 import { useStoreSearch } from "@/app/stores/storeSearch"
 import { supabase } from "@/lib/supabaseClient"
 import { useRouter } from "next/navigation"
