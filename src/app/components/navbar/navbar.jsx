@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import FiltrosHeader from "../filtros/filtrosHeader";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import ModalBase from "../modals/modalBase";
+import ModalBase from "../modalsTest/modalBase";
 
 export default function Navbar(){
     const [isOpen, setIsOpen]= useState(false)

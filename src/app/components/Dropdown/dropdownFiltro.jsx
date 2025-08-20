@@ -1,7 +1,7 @@
 'use client'
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions} from '@headlessui/react'
 import { useEffect, useState } from 'react'
-import useFavoritos from '@/hooks/useFavoritos'
+import useFavoritos from '@/hooksTest/useFavoritos'
 import { Hotel } from 'lucide-react'
 export default function DropdownFiltros({filtro, setFiltro}) {
 	const [ciudades, setCiudades] = useState([])

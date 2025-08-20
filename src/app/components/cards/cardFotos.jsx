@@ -6,11 +6,11 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css' 
-import ModalBase from "../modals/modalBase"
+import ModalBase from "../modalsTest/modalBase"
 import { useRouter } from "next/navigation"
 import { useStoreSearch } from "@/app/stores/storeSearch"
-import useFavoritos from "@/hooks/useFavoritos"
-import Modal from "../modals/modal"
+import useFavoritos from "@/hooksTest/useFavoritos"
+import Modal from "../modalsTest/modal"
 export default function CardFotos({ciudad}){ 
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)

@@ -8,7 +8,7 @@ import ServiciosHospedaje from './elements/serviciosHospedaje'
 import TipoAlojamiento from './elements/tipoAlojamiento'
 import styles from './registrarCasa.module.css'
 import { useUser } from '@clerk/nextjs'
-import useFavoritos from '@/hooks/useFavoritos'
+import useFavoritos from '@/hooksTest/useFavoritos'
 export default function RegistrarCasaE({data}){
     const {user, isLoaded}= useUser() 
     const {updateAlojamiento} = useFavoritos()    
