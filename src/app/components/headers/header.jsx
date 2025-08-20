@@ -20,7 +20,7 @@
 import  {Search, Heart ,Home, MessageSquare,User} from "lucide-react"
 import Link from "next/link"
 import { SignedIn, UserButton, useUser } from "@clerk/nextjs"
-import DropdownMenu from "../dropdownTest/dropdown"
+import DropdownMenu from "../dropdown/dropdown"
 import {  useEffect, useState } from "react"
 import ModalServicios from "../modals/modalServicios"
 import useFavoritos from "@/hooks/useFavoritos"
