@@ -6,7 +6,6 @@ import FotosHospedaje from './elements/fotosHospedaje'
 import QueAlojamiento from './elements/queAlojamiento'
 import ServiciosHospedaje from './elements/serviciosHospedaje'
 import TipoAlojamiento from './elements/tipoAlojamiento'
-import styles from './registrarCasa.module.css'
 import { useUser } from '@clerk/nextjs'
 import useFavoritos from '@/hooks/useFavoritos'
 export default function RegistrarCasaE({data}){
@@ -63,7 +62,7 @@ export default function RegistrarCasaE({data}){
     }
     console.log(data)
     return(
-        <form className={`${styles.formulario} w-full md:w-[50%] pb-20`}  >           
+        <form className={` w-full md:w-[50%] pb-20`}  >           
             <TipoAlojamiento tipo={tipo} setTipo={setTipo} />
             <QueAlojamiento tipoAlojamiento={tipoAlojamiento} setTipoAlojamiento={setTipoAlojamiento}/>
             <fieldset className='p-4'>
