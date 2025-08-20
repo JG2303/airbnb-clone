@@ -1,6 +1,6 @@
 'use client'
 import RegistrarCasaE from "@/app/components/formRegistroCasa/registrarCasa-O"
-import useFavoritos from "@/hooksTest/useFavoritos"
+import useFavoritos from "@/hooks/useFavoritos"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 export default function editar(){

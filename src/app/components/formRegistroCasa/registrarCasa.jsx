@@ -1,7 +1,7 @@
 "use client";
 import {useState } from 'react'
 import { useUser } from '@clerk/nextjs'
-import useFavoritos from '@/hooksTest/useFavoritos';
+import useFavoritos from '@/hooks/useFavoritos';
 import TipoAlojamiento from './elements/tipoAlojamiento';
 import QueAlojamiento from './elements/queAlojamiento';
 import DireccionAlojamiento from './elements/direccionAlojamiento';

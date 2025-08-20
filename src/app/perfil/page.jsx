@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import ModalServicios from "../components/modalsTest/modalServicios";
+import ModalServicios from "../components/modals/modalServicios";
 import { useState } from "react";
 
 export default function Perfil() {

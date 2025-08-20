@@ -7,7 +7,7 @@ import { useReservaStore } from "@/app/stores/storeReserva"
 import { differenceInCalendarDays, eachDayOfInterval, format, parseISO } from "date-fns"
 import { AlarmSmoke, CircleDot, Droplets, FireExtinguisher, Flame, HelpCircle, Laptop, LayoutGrid, Music, ParkingCircle, ParkingSquare, ShowerHead, Tv, Umbrella, Utensils, WashingMachine, Waves, Wifi, Wind, ArrowLeft, ArrowRight } from "lucide-react";
 import { useClerk, useUser } from "@clerk/nextjs"
-import useFavoritos from "@/hooksTest/useFavoritos"
+import useFavoritos from "@/hooks/useFavoritos"
 import Mapa from "@/app/components/mapas/mapa"
 import CalendarioFechas from "@/app/components/calendario/calendarioFechas"
 import CalendarioDoble from "@/app/components/calendario/calendarioDoble"
@@ -15,7 +15,7 @@ import Calendario from "@/app/components/calendario/calendario"
 import DropdownHuespedesCelu from "@/app/components/dropdown/DropHuespedesCelu"
 import DropdownBase from "@/app/components/dropdown/dropdownBase"
 import Link from "next/link"
-import ModalFotos from "@/app/components/modalsTest/modalFotos"
+import ModalFotos from "@/app/components/modals/modalFotos"
 export default function Rooms(){ 
      
     const opciones = [
