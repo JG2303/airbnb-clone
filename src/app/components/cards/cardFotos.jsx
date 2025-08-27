@@ -93,8 +93,8 @@ export default function CardFotos({ciudad}){
         }
         setIsLoading(false)
     } 
-    // --------------------------fin carga datos iniciales----------------------  
-    console.log('DATA: ',dataAlojamiento)   
+    // --------------------------fin carga datos iniciales---------------------- 
+     
     const uploadDataFavoritos = async (id) =>{
         if(!user){            
             setMostrarModal(true)
@@ -119,10 +119,9 @@ export default function CardFotos({ciudad}){
         return texto.charAt(0).toUpperCase() + texto.slice(1)
     }
     // -----------------------------configuracion del anuncio-----------------
-    const handleAnuncio = (id_alojamiento,id_reserva ,ingreso, salida, precio, huespedes, titulo) => {
+    const handleAnuncio = (id_alojamiento,id_reserva,ingreso, salida, precio, huespedes, titulo) => {
         setClickAnuncio(true)
-        setIdAnuncio(id_alojamiento)
-        console.log('id ALOJAMIENTO: ',id_alojamiento )
+        setIdAnuncio(id_alojamiento)        
         setDataReservas({...dataReservas,
             fecha_entrada: ingreso,
             fecha_salida: salida,
@@ -172,6 +171,7 @@ export default function CardFotos({ciudad}){
         }
     }, [user]);    
     if (error) return <p>Error al cargar las fotos: {error.message}</p>; 
+    console.log('reservas: ', dataAlojamiento)
     return (        
         <>
             { isLoading  ? (
@@ -317,11 +317,11 @@ export default function CardFotos({ciudad}){
                                     </div>
                                     
                                     <div className="flex flex-col gap-3">
-                                        <Link href={`/rooms/${idAnuncio}`}>
+                                        {/* <Link href={`/rooms/${idAnuncio}`}>
                                             <button className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-semibold hover:opacity-90 transition">
                                                 Visitar anuncio
                                             </button>
-                                        </Link>
+                                        </Link> */}
                                         <button 
                                             type="button"
                                             onClick={()=>eliminarReserva(dataReservas.id_reserva)}
