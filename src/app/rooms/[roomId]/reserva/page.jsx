@@ -30,6 +30,7 @@ export default function Reserva(){
             .from('reservas')
             .insert(data)
             if(error){
+                console.error('Error Supabase: ', error)
                 alert('error al cargar datos a la BD')
             }else{
                 alert('Alojamiento reservado con exito')
@@ -65,11 +66,9 @@ export default function Reserva(){
                             <div>
                                 <h3>Fechas</h3>
                                 <p>{datosReserva.fechaInicio}  </p>
-                            </div>
-                            
+                            </div>                            
                         </div>
                         <hr />
-
                         <div className="flex justify-between items-center py-4">
                             <div>
                                 <h3>Huespédes</h3>

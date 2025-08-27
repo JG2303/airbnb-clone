@@ -70,8 +70,7 @@ export default function CardFotos({ciudad}){
             
             const reservas = data.map(r => ({
                 ...r,
-                ...r.alojamiento,   // esto aplana los campos de alojamiento al objeto raíz
-                
+                ...r.alojamiento,   
             }));
             setDataAlojamiento(reservas) 
             setReservas(true)
@@ -94,7 +93,8 @@ export default function CardFotos({ciudad}){
         }
         setIsLoading(false)
     } 
-    // --------------------------fin carga datos iniciales----------------------     
+    // --------------------------fin carga datos iniciales----------------------  
+    console.log('DATA: ',dataAlojamiento)   
     const uploadDataFavoritos = async (id) =>{
         if(!user){            
             setMostrarModal(true)
@@ -122,6 +122,7 @@ export default function CardFotos({ciudad}){
     const handleAnuncio = (id_alojamiento,id_reserva ,ingreso, salida, precio, huespedes, titulo) => {
         setClickAnuncio(true)
         setIdAnuncio(id_alojamiento)
+        console.log('id ALOJAMIENTO: ',id_alojamiento )
         setDataReservas({...dataReservas,
             fecha_entrada: ingreso,
             fecha_salida: salida,
@@ -170,7 +171,7 @@ export default function CardFotos({ciudad}){
             setMostrarModal(false);            
         }
     }, [user]);    
-    if (error) return <p>Error al cargar las fotos: {error.message}</p>;    
+    if (error) return <p>Error al cargar las fotos: {error.message}</p>; 
     return (        
         <>
             { isLoading  ? (
@@ -187,7 +188,7 @@ export default function CardFotos({ciudad}){
                         role="button" 
                         onClick={
                                 ()=>handleAnuncio(
-                                        alojamiento.id_alojamiento,
+                                        alojamiento.id,
                                         alojamiento.id,                                        
                                         alojamiento.fecha_entrada,
                                         alojamiento.fecha_salida,
@@ -206,6 +207,7 @@ export default function CardFotos({ciudad}){
                                 className="rounded-[20px] object-cover w-full h-full"                                
                             />
                          </div>
+                         {alojamiento.id_alojamiento}
                          <div >
                              <h2 className="text-[12px] md:text-[15px] ">{capitalizarPrimeraLetra(alojamiento.alojamiento)} en {alojamiento.ciudad}</h2>
                              {
